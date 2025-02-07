@@ -11,6 +11,7 @@
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+.idea
 
 ### Terraform template
 # Local .terraform directories
