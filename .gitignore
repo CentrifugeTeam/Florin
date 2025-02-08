@@ -186,6 +186,8 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+.terraform.lock.hcl
+*.env
 .env
 .venv
 env/
