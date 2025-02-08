@@ -1,1 +1,2 @@
 /uv.lock filter=lfs diff=lfs merge=lfs -text
+/services/api/uv.lock filter=lfs diff=lfs merge=lfs -text
