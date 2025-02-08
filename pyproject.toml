@@ -16,3 +16,9 @@ api = [
     "sqlmodel>=0.0.22",
     "ydb-async>=0.0.2",
 ]
+sso = [
+    "fastapi>=0.115.8",
+    "fastapi-sso>=0.17.0",
+    "python-dotenv>=1.0.1",
+    "uvicorn>=0.34.0",
+]
