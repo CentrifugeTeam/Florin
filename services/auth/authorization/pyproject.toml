@@ -7,8 +7,11 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.8",
     "fastapi-sso>=0.17.0",
+    "greenlet>=3.1.1",
+    "pydantic-settings>=2.7.1",
     "python-dotenv>=1.0.1",
     "sqlmodel>=0.0.22",
     "uvicorn>=0.34.0",
     "ydb-async>=0.0.2",
+    "ydb[yc]>=3.18.15",
 ]
