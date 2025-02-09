@@ -7,3 +7,9 @@ variable "cloud_id" {
 
 }
 
+
+variable "folder_id" {
+  description = "Variable for Yandex Cloud folder_id"
+
+}
+
