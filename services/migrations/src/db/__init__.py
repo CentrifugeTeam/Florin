@@ -1,4 +1,4 @@
 from sqlmodel import SQLModel
-from .profile import Profile
-from .accounts import Account
 from .roles import Role, ProfileRole
+from .tokens import Token
+from .users import User

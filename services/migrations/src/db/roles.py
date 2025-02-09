@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from sqlalchemy import Column, String
 from sqlmodel import SQLModel, Field
 
 from .mixins import UUIDMixin
@@ -7,7 +8,7 @@ from .mixins import UUIDMixin
 
 class Role(UUIDMixin, SQLModel, table=True):
     __tablename__ = 'roles'
-    name: str
+    name: str = Field(sa_column=Column(String(256), unique=True))
 
 
 class ProfileRole(UUIDMixin, SQLModel, table=True):

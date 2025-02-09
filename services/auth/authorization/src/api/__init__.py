@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from . import google_sso, yandex_sso
+from . import sso, auth
 
-r = APIRouter(prefix="/sso")
-r.include_router(google_sso.r)
-r.include_router(yandex_sso.r)
+r = APIRouter()
+r.include_router(sso.r)
+r.include_router(auth.r)
