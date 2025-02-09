@@ -6,4 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.14.1",
+    "pydantic-settings>=2.7.1",
+    "sqlmodel>=0.0.22",
+    "ydb[yc]>=3.18.15",
+    "ydb-async>=0.0.2",
 ]
