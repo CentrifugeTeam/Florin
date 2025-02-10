@@ -1,2 +1,3 @@
 from sqlmodel import SQLModel
-from .profile import Profile, Account, Token
+from .users import User
+from .tokens import Token

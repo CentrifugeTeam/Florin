@@ -5,12 +5,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.security import HTTPAuthorizationCredentials
 from logging import getLogger
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from services.auth.authorization.src.db import User
 from ..deps import get_session
 from ..backend import auth_backend
 from ..managers import user_manager
 from ..schemas.tokens import PermissionTokenRead
 from ..schemas.profiles import ProfileCreate, ProfileRead
-from ..exceptions import UserNotFoundException
 from fastapi_libkit.responses import auth_responses
 from fastapi_libkit.schemas import as_form
 
@@ -42,7 +43,7 @@ async def login(
 async def logout(
         *,
         user: User = Depends(auth_backend.authenticate()),
-        cred: Annotated[HTTPAuthorizationCredentials, Depends(auth_backend.security)],
+        cred: Annotated[OAuth2PasswordRequestForm, Depends(auth_backend.security)],
         session: AsyncSession = Depends(get_session)
 ):
     await auth_backend.logout(session, user, cred)

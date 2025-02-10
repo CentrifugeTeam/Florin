@@ -1,7 +1,5 @@
-from sqlmodel import SQLModel
+from pydantic import BaseModel
 
-
-
-
-class PermissionTokenRead(SQLModel):
-    token: str
+class PermissionTokenRead(BaseModel):
+    access_token: str
+    token_type: str = 'bearer'

@@ -1,44 +1,39 @@
-from typing import Annotated, Optional
-from fastapi import Depends, HTTPException, status, Request
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from fastapi.security.base import SecurityBase
-from fastapi.security.http import get_authorization_scheme_param
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Annotated
+from fastapi import Depends
+from fastapi.security.oauth2 import OAuth2PasswordBearer
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel import select
+from .db import User, Token
 from .deps import get_session
-from .managers.token import token_manager
-
-
-class Security(HTTPBearer):
-    async def __call__(
-            self, request: Request
-    ) -> Optional[HTTPAuthorizationCredentials]:
-        authorization = request.headers.get("Authorization")
-        scheme, credentials = get_authorization_scheme_param(authorization)
-        if not (authorization and scheme and credentials):
-            raise HTTPException()
-        if scheme.lower() != "bearer":
-            raise HTTPException()
-        return HTTPAuthorizationCredentials(scheme=scheme, credentials=credentials)
+from .adapters.token import token_adapter
+from .exceptions import JwtAuthError, UnauthorizedException, ForbidException
 
 
 class AuthBackend:
 
-    def __init__(self, security: SecurityBase):
+    def __init__(self, security: OAuth2PasswordBearer):
         self.security = security
 
-    def authenticate(self, verified: bool = False, superuser: bool = False):
+    def authenticate(self, is_verified: bool = False, superuser: bool = False):
         security = self.security
 
         async def wrapped(
-                cred: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+                token: Annotated[str, Depends(security)],
                 session: AsyncSession = Depends(get_session)
         ):
-            user = await token_manager.authenticate(cred.credentials, session)
             exc = UnauthorizedException
+            try:
+                jwt = token_adapter.decode_token(token)
+            except JwtAuthError:
+                raise exc
+
+            stmt = select(User).join(Token, Token.user_id == User.id).where((Token.token == token) & (Token.user_id == jwt['sub']))
+            user = (await session.exec(stmt)).one_or_none()
+
             if user:
                 exc = ForbidException
                 if (
-                        verified and not user.is_verified or superuser and not user.is_superuser
+                        is_verified and not user.is_verified or superuser and not user.is_superuser
                 ):
                     user = None
 
@@ -52,4 +47,4 @@ class AuthBackend:
 
 
 
-auth_backend = AuthBackend(security=Security())
+auth_backend = AuthBackend(security=OAuth2PasswordBearer(tokenUrl='login'))

@@ -24,19 +24,6 @@ class TokenManager(BaseManager):
         self.access_token_lifetime = access_token_lifetime
         self.refresh_token_lifetime = refresh_token_lifetime
 
-    async def refresh_token(self, session: AsyncSession, refresh_token: str):
-        payload = self.decode_token(refresh_token)
-        stmt = select(User, UserToken).join(UserToken).where(User.id == payload['sub']).where(
-            UserToken.refresh_token == refresh_token)
-        res = (await session.exec(stmt)).one()
-
-        await session.delete(res.UserToken)
-
-        access_token, refresh_token = self.generate_pair_of_tokens(res.User.id)
-        user_token = UserToken(user_id=res.User.id, access_token=access_token, refresh_token=refresh_token)
-        session.add(user_token)
-        await session.commit()
-        return access_token, refresh_token
 
     def generate_pair_of_tokens(self, user_id: UUID):
         payload = {"sub": str(user_id)}
@@ -71,22 +58,6 @@ class TokenManager(BaseManager):
             raise MissingTokenOrInactiveUserException
         return payload
 
-    async def logout(self, session: AsyncSession, user_id: UUID, access_token: str) -> None:
-        res = self.decode_token(access_token)
-        if res['sub'] != user_id:
-            raise UnauthorizedInvalidDataException
-
-        stmt = delete(UserToken).where(UserToken.access_token == access_token).where(UserToken.user_id == user_id)
-        res = await session.exec(stmt)
-        await session.commit()
-
-    async def login(self, session: AsyncSession, user_id: UUID) -> UserToken:
-        access_token, refresh_token = self.generate_pair_of_tokens(user_id)
-        user_token = UserToken(user_id=user_id, access_token=access_token, refresh_token=refresh_token)
-        session.add(user_token)
-        await session.commit()
-        return user_token
-
 
 token_manager = TokenManager(settings.JWT_PRIVATE_KEY, access_token_lifetime=timedelta(days=2),
-                             refresh_token_lifetime=timedelta(days=30))
+                             )

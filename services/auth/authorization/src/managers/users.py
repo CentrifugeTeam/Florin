@@ -1,35 +1,34 @@
 from typing import Iterable, Any
 from fastapi import UploadFile, HTTPException
-from fastapi_sqlalchemy_toolkit.model_manager import ModelT, ModelManager
+from fastapi_sqlalchemy_toolkit.model_manager import ModelManager
 from sqlmodel.ext.asyncio.session import AsyncSession
-
-from ..schemas.profiles import UserCreate
-from ..db import Profile, Account, Token
+from sqlmodel import select
+from services.users.src.schemas.tokens import PermissionTokenRead
+from ..adapters.token import token_adapter
+from ..schemas.users import UserCreate
+from ..db import User
 from starlette import status
 from passlib.hash import pbkdf2_sha256
-from .files import file_manager
-from secrets import token_urlsafe
-
-account_manager = ModelManager(Account)
+from ..adapters.files import file_manager
 
 
 class UsersManager(ModelManager):
 
     def __init__(self) -> None:
         self.password_helper = pbkdf2_sha256
-        super().__init__(Profile)
+        super().__init__(User)
 
 
     async def create_user(
             self,
             session: AsyncSession,
-            in_obj: UserCreate | None = None,
+            in_obj: UserCreate,
             file: UploadFile | None = None,
             *,
             commit: bool = True,
             refresh_attribute_names: Iterable[str] | None = None,
             **attrs: Any,
-    ) -> Profile:
+    ) -> User:
 
         in_obj.password = self.password_helper.hash(in_obj.password)
         create_data = in_obj.model_dump()
@@ -48,21 +47,15 @@ class UsersManager(ModelManager):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not upload file')
 
         create_data['photo_url'] = file
-        db_obj: Profile = self.model(**create_data)
-        account = Account(login=in_obj.username, password=in_obj.password,
-                type='password'
-                )
-        token = Token(token=token_urlsafe(32))
-        account.token = token
-        db_obj.accounts.append(account)
-
+        create_data['username'] = in_obj.login
+        create_data['type'] = 'password'
+        db_obj: User = self.model(**create_data)
         session.add(db_obj)
 
         await self.save(session, commit=commit)
 
         await session.refresh(db_obj, attribute_names=refresh_attribute_names)
         return db_obj
-
 
 
 
