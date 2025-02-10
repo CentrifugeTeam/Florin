@@ -3,8 +3,9 @@ from .responses import UnauthorizedException, UnauthorizedInvalidDataException, 
 from .db import Profile
 from .schemas.tokens import PermissionToken
 from fastapi import Depends, HTTPException, status, Request
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer, OAuth2PasswordRequestForm
 from fastapi.security.base import SecurityBase
+
 from fastapi.security.http import get_authorization_scheme_param
 from sqlalchemy.ext.asyncio import AsyncSession
 from .deps import get_session

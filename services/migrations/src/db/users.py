@@ -20,3 +20,4 @@ class User(UUIDMixin, SQLModel, table=True):
 
     __table_args__ = (UniqueConstraint('username'), )
     tokens: list['Token'] = Relationship(back_populates='user')
+

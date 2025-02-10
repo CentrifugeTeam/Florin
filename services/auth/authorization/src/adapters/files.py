@@ -14,7 +14,6 @@ logger = getLogger(__name__)
 class FilesManager:
 
     def __init__(self):
-
         self.session = get_session()
 
     @staticmethod
