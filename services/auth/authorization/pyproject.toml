@@ -11,11 +11,11 @@ dependencies = [
     "fastapi-sqlalchemy-toolkit>=0.7.11",
     "fastapi-sso>=0.17.0",
     "greenlet>=3.1.1",
+    "mangum>=0.19.0",
     "passlib>=1.7.4",
     "pydantic-settings>=2.7.1",
     "python-dotenv>=1.0.1",
     "sqlmodel>=0.0.22",
-    "uvicorn>=0.34.0",
     "ydb-async>=0.0.2",
     "ydb[yc]>=3.18.15",
 ]

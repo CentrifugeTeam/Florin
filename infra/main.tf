@@ -14,6 +14,7 @@ provider "yandex" {
   folder_id = var.folder_id
 }
 
+
 resource "yandex_ydb_database_serverless" "ydb" {
   name = "ydb"
 }

@@ -13,3 +13,10 @@ variable "folder_id" {
 
 }
 
+
+
+variable "oauth_key" {
+
+}
+
+variable "jwt_private_key" {}
