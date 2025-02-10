@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .tokens import Token
+    from user_plants import UserPlant
 
 
 class User(UUIDMixin, SQLModel, table=True):
@@ -20,4 +21,5 @@ class User(UUIDMixin, SQLModel, table=True):
 
     __table_args__ = (UniqueConstraint('username'), )
     tokens: list['Token'] = Relationship(back_populates='user')
+    user: 'UserPlant' = Relationship(back_populates='user')
 
