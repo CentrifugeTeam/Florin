@@ -3,7 +3,7 @@ from fastapi import UploadFile, HTTPException
 from fastapi_sqlalchemy_toolkit.model_manager import ModelManager
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
-from services.users.src.schemas.tokens import PermissionTokenRead
+from ..schemas.tokens import PermissionTokenRead
 from ..adapters.token import token_adapter
 from ..schemas.users import UserCreate
 from ..db import User
@@ -22,6 +22,7 @@ class UsersManager(ModelManager):
     async def create_user(
             self,
             session: AsyncSession,
+
             in_obj: UserCreate,
             file: UploadFile | None = None,
             *,
@@ -38,7 +39,7 @@ class UsersManager(ModelManager):
         for field, default in self.defaults.items():
             if field not in create_data:
                 create_data[field] = default
-
+        create_data['username'] = in_obj.login
         await self.run_db_validation(session, in_obj=create_data)
         if file is not None:
             try:
@@ -47,7 +48,7 @@ class UsersManager(ModelManager):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not upload file')
 
         create_data['photo_url'] = file
-        create_data['username'] = in_obj.login
+
         create_data['type'] = 'password'
         db_obj: User = self.model(**create_data)
         session.add(db_obj)
