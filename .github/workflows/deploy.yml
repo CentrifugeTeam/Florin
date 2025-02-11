@@ -1,0 +1,19 @@
+name: Deploy
+
+on:
+    push:
+
+
+jobs:
+    authorization:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Save artifact
+              run: |
+                cd infra/data && touch hello.txt
+                
+            - name: Check artifact
+              run: |
+                stat infra/data/hello.txt
+
