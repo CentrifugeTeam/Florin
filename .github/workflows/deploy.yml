@@ -29,18 +29,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+            python-version: "3.12"
+
+      - uses: yezz123/setup-uv@v4
+
+      - name: Create Zip Archieve
+        working-directory: services/auth/authorization/
+        run: |
+            uv pip freeze > requirements.txt
+            zip -r authorization.zip * -x .venv -x uv.lock -x README.md -x pyproject.toml -x -x .*
+
       - name: Upload files to Object Storage
         id: s3-upload
         uses: yc-actions/yc-obj-storage-upload@v2
         with:
             yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-            bucket: ${{ secrets.BUCKET }}
+            bucket: auth-sevice-internal-use-bucket
             root: services/auth/authorization/
             include: |
-                *.py
-                requirements.txt
-            exclude: |
-                .venv
+                authorization.zip
 
     #   - name: Deploy Function
     #     id: sls-func
