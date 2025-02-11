@@ -6,6 +6,13 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
+env: 
+    STUFF_BUCKET: auth-sevice-internal-use-bucket
+    FOLDER_ID: b1g4o9t4vgcbnkpunqeu
+    SERVICE_ACCOUNT_ID: ajetqfs3ng6e1gjv7mdr
+    SECRET_VERSION_ID: e6qe0ts1dc9g0h1h4kob
+    SECRET_ID: e6q78o6erk6o9suemkh4
+
 jobs:
   # JOB to run change detection
   changes:
@@ -39,6 +46,7 @@ jobs:
       - name: Create Zip Archieve
         working-directory: services/auth/authorization/
         run: |
+            uv sync
             uv pip freeze > requirements.txt
 
       - name: Deploy Function
@@ -46,13 +54,25 @@ jobs:
         uses: yc-actions/yc-sls-function@v2.12.0
         with:
             yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
-            folder-id: 'b1g4o9t4vgcbnkpunqeu'
+            folder-id: $FOLDER_ID
+            service-account: $SERVICE_ACCOUNT_ID
             source-root: services/auth/authorization/
             function-name: 'authorization'
             runtime: 'python312'
             memory: '256Mb'
             entrypoint: 'main.handler'
-            bucket: auth-sevice-internal-use-bucket
+            bucket: $STUFF_BUCKET
+            secrets: |
+                OAUTH_KEY=$SECRET_ID/$SECRET_VERSION_ID/OAUTH_KEY
+                DOCUMENT_API_ENDPOINT=$SECRET_ID/$SECRET_VERSION_ID/DOCUMENT_API_ENDPOINT
+                DOCUMENT_DATABASE_PATH=$SECRET_ID/$SECRET_VERSION_ID/DOCUMENT_DATABASE_PATH
+                AWS_ACCESS_KEY_ID=$SECRET_ID/$SECRET_VERSION_ID/AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY=$SECRET_ID/$SECRET_VERSION_ID/AWS_SECRET_ACCESS_KEY
+                JWT_PRIVATE_KEY=$SECRET_ID/$SECRET_VERSION_ID/JWT_PRIVATE_KEY
+                
+
+
+
             include: |
                 **/*.py
                 requirements.txt
