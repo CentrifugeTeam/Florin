@@ -55,20 +55,20 @@ jobs:
         with:
             yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
             folder-id: ${{env.FOLDER_ID}}
-            service-account: $SERVICE_ACCOUNT_ID
+            service-account: ${{env.SERVICE_ACCOUNT_ID}}
             source-root: services/auth/authorization/
             function-name: 'authorization'
             runtime: 'python312'
             memory: '256Mb'
             entrypoint: 'main.handler'
-            bucket: $STUFF_BUCKET
+            bucket: ${{env.STUFF_BUCKET}}
             secrets: |
-                OAUTH_KEY=$SECRET_ID/$SECRET_VERSION_ID/OAUTH_KEY
-                DOCUMENT_API_ENDPOINT=$SECRET_ID/$SECRET_VERSION_ID/DOCUMENT_API_ENDPOINT
-                DOCUMENT_DATABASE_PATH=$SECRET_ID/$SECRET_VERSION_ID/DOCUMENT_DATABASE_PATH
-                AWS_ACCESS_KEY_ID=$SECRET_ID/$SECRET_VERSION_ID/AWS_ACCESS_KEY_ID
-                AWS_SECRET_ACCESS_KEY=$SECRET_ID/$SECRET_VERSION_ID/AWS_SECRET_ACCESS_KEY
-                JWT_PRIVATE_KEY=$SECRET_ID/$SECRET_VERSION_ID/JWT_PRIVATE_KEY
+                OAUTH_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/OAUTH_KEY
+                DOCUMENT_API_ENDPOINT=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_API_ENDPOINT
+                DOCUMENT_DATABASE_PATH=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_DATABASE_PATH
+                AWS_ACCESS_KEY_ID=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY=$SECRET_ID/${{env.SECRET_VERSION_ID}}/AWS_SECRET_ACCESS_KEY
+                JWT_PRIVATE_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/JWT_PRIVATE_KEY
                 
             include: |
                 **/*.py
