@@ -8,7 +8,7 @@ concurrency:
 
 env: 
     STUFF_BUCKET: auth-sevice-internal-use-bucket
-    FOLDER_ID: b1g4o9t4vgcbnkpunqeu
+    FOLDER_ID: 'b1g4o9t4vgcbnkpunqeu'
     SERVICE_ACCOUNT_ID: ajetqfs3ng6e1gjv7mdr
     SECRET_VERSION_ID: e6qe0ts1dc9g0h1h4kob
     SECRET_ID: e6q78o6erk6o9suemkh4
@@ -70,9 +70,6 @@ jobs:
                 AWS_SECRET_ACCESS_KEY=$SECRET_ID/$SECRET_VERSION_ID/AWS_SECRET_ACCESS_KEY
                 JWT_PRIVATE_KEY=$SECRET_ID/$SECRET_VERSION_ID/JWT_PRIVATE_KEY
                 
-
-
-
             include: |
                 **/*.py
                 requirements.txt
@@ -82,5 +79,7 @@ jobs:
                 README.md
                 pyproject.toml
                 .*
+                
+            execution-timeout: 1
 
 
