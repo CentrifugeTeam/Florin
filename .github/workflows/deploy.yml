@@ -54,7 +54,7 @@ jobs:
         uses: yc-actions/yc-sls-function@v2.12.0
         with:
             yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
-            folder-id: 'b1g4o9t4vgcbnkpunqeu'
+            folder-id: ${{env.FOLDER_ID}}
             service-account: $SERVICE_ACCOUNT_ID
             source-root: services/auth/authorization/
             function-name: 'authorization'
