@@ -8,7 +8,7 @@ concurrency:
 
 env: 
     STUFF_BUCKET: auth-sevice-internal-use-bucket
-    FOLDER_ID: 'b1g4o9t4vgcbnkpunqeu'
+    FOLDER_ID: b1g4o9t4vgcbnkpunqeu
     SERVICE_ACCOUNT_ID: ajetqfs3ng6e1gjv7mdr
     SECRET_VERSION_ID: e6qe0ts1dc9g0h1h4kob
     SECRET_ID: e6q78o6erk6o9suemkh4
@@ -67,7 +67,7 @@ jobs:
                 DOCUMENT_API_ENDPOINT=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_API_ENDPOINT
                 DOCUMENT_DATABASE_PATH=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_DATABASE_PATH
                 AWS_ACCESS_KEY_ID=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/AWS_ACCESS_KEY_ID
-                AWS_SECRET_ACCESS_KEY=$SECRET_ID/${{env.SECRET_VERSION_ID}}/AWS_SECRET_ACCESS_KEY
+                AWS_SECRET_ACCESS_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/AWS_SECRET_ACCESS_KEY
                 JWT_PRIVATE_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/JWT_PRIVATE_KEY
                 
             include: |
