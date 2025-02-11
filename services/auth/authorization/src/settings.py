@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str
     JWT_PRIVATE_KEY: str
 
+#
     @property
     def sqlalchemy_url(self):
         return f"sql+asyncydb://{self.DOCUMENT_API_ENDPOINT}{self.DOCUMENT_DATABASE_PATH}"
