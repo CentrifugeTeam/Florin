@@ -1,19 +1,66 @@
 name: Deploy
 
-on:
-    push:
+on: [push, workflow_dispatch]
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
-    authorization:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - name: Save artifact
-              run: |
-                cd infra/data && touch hello.txt
-                
-            - name: Check artifact
-              run: |
-                stat infra/data/hello.txt
+  # JOB to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    # Required permissions
+    permissions:
+      pull-requests: read
+    # Set job outputs to values from filter step
+    outputs:
+      authorization: ${{ steps.filter.outputs.authorization }}
+    steps:
+    # For pull requests it's not necessary to checkout the code
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          authorization:
+            - 'services/auth/authorization/**'
+
+  # JOB to build and test authorization code
+  authorization:
+    needs: changes
+    if: ${{ needs.changes.outputs.authorization == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload files to Object Storage
+        id: s3-upload
+        uses: yc-actions/yc-obj-storage-upload@v2
+        with:
+            yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+            bucket: ${{ secrets.BUCKET }}
+            root: services/auth/authorization/
+            include: |
+                *.py
+                requirements.txt
+            exclude: |
+                .venv
+
+    #   - name: Deploy Function
+    #     id: sls-func
+    #     uses: yc-actions/yc-sls-function@v1.0.1
+    #     with:
+    #         yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
+    #         folder-id: 'b1gbmkj6*******'
+    #         function-name: 'github-deploy'
+    #         runtime: 'nodejs16'
+    #         memory: '256Mb'
+    #         entrypoint: 'dist/index.handler'
+    #         environment: |
+    #             DEBUG=True
+    #             FOO=bar
+    #         include: |
+    #             ./dist
+    #             package.json
+    #         exclude: |
+    #             **/*.ts
 

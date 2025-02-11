@@ -12,7 +12,7 @@ resource "yandex_lockbox_secret_version" "secret" {
   }
   entries {
     key = "DOCUMENT_API_ENDPOINT"
-    text_value = yandex_ydb_database_serverless.ydb.document_api_endpoint
+    text_value = yandex_ydb_database_serverless.ydb.ydb_api_endpoint
   }
 
   entries {
