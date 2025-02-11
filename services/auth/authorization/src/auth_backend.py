@@ -21,6 +21,7 @@ class AuthBackend:
                 token: Annotated[str, Depends(security)],
                 session: AsyncSession = Depends(get_session)
         ):
+
             exc = UnauthorizedException
             try:
                 jwt = token_adapter.decode_token(token)
