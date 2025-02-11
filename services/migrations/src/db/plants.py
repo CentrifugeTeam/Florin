@@ -25,7 +25,7 @@ class Plant(UUIDMixin, SQLModel, table=True):
   family_id: UUID = Field(foreign_key='families.id')
   genius_id: UUID = Field(foreign_key='genius.id')
   rank_id: UUID = Field(foreign_key='ranks.id')
-  pran_id: UUID = Field(foreign_key='plans.id')
+  plan_id: UUID = Field(foreign_key='plans.id')
 
   family: 'Family' = Relationship(back_populates='plants')
   genius: 'Genius' = Relationship(back_populates='plants')
