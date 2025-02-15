@@ -1,16 +1,25 @@
 from typing import Iterable, Any
 from fastapi import UploadFile, HTTPException
 from fastapi_sqlalchemy_toolkit.model_manager import ModelManager
+from  fastapi_libkit.responses import ErrorModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlmodel import select
-from ..schemas.tokens import PermissionTokenRead
-from ..adapters.token import token_adapter
 from ..schemas.users import UserCreate
 from ..db import User
 from starlette import status
 from passlib.hash import pbkdf2_sha256
 from ..adapters.files import file_manager
 
+CouldUploadFileHTTPException = HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not upload file')
+
+
+def to_openapi(exception: HTTPException):
+    return {exception.status_code: {
+        'detail': exception.detail,
+        'headers': exception.headers,
+        'description': exception.detail,
+        'model': ErrorModel
+    }
+    }
 
 class UsersManager(ModelManager):
 
@@ -24,7 +33,6 @@ class UsersManager(ModelManager):
             session: AsyncSession,
 
             in_obj: UserCreate,
-            file: UploadFile | None = None,
             *,
             commit: bool = True,
             refresh_attribute_names: Iterable[str] | None = None,
@@ -41,16 +49,19 @@ class UsersManager(ModelManager):
                 create_data[field] = default
         create_data['username'] = in_obj.login
         await self.run_db_validation(session, in_obj=create_data)
-        if file is not None:
-            try:
-                file = await file_manager.save_file(file)
-            except Exception:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not upload file')
-
-        create_data['photo_url'] = file
 
         create_data['type'] = 'password'
         db_obj: User = self.model(**create_data)
+
+
+        if in_obj.photo is not None:
+            try:
+                in_obj.photo = await file_manager.save_file(in_obj.photo, bucket='out-photos', folder=db_obj.id)
+            except Exception:
+                raise CouldUploadFileHTTPException
+
+        db_obj.photo_url = in_obj.photo
+
         session.add(db_obj)
 
         await self.save(session, commit=commit)
