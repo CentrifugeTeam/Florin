@@ -1,18 +1,15 @@
 [project]
-name = "migrations"
+name = "plants"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "alembic>=1.14.1",
+    "fastapi>=0.115.8",
+    "mangum>=0.19.0",
     "pydantic-settings>=2.7.1",
     "sqlmodel>=0.0.22",
-    "ydb[yc]>=3.18.15",
+    "uvicorn>=0.34.0",
     "ydb-async>=0.0.2",
-    "greenlet>=3.1.1",
-    "torch>=2.6.0",
-    "googletrans>=4.0.2",
-    "diffusers>=0.32.2",
-    "transformers>=4.48.3",
+    "ydb[yc]>=3.18.16",
 ]
