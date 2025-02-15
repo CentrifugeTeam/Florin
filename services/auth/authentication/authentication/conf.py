@@ -1,4 +1,4 @@
-from .settings import Settings
+from settings import Settings
 from sqlmodel.ext.asyncio.session import AsyncSession
 from ydb.aio.iam import ServiceAccountCredentials, YandexPassportOAuthIamCredentials
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
