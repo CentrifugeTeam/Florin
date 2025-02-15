@@ -1,8 +1,10 @@
-from ..conf import settings
+from conf import settings
 from datetime import datetime, timezone, timedelta
 from uuid import UUID
 import jwt
-from ..exceptions import JwtAuthError
+
+class JwtException(Exception):
+    pass
 
 
 class TokenAdapter:
@@ -37,8 +39,7 @@ class TokenAdapter:
             payload['sub'] = UUID(payload['sub'])
 
         except (jwt.PyJWTError, ValueError, jwt.ExpiredSignatureError):
-            raise JwtAuthError
+            raise JwtException
         return payload
-
 
 token_adapter = TokenAdapter(settings.JWT_PRIVATE_KEY, access_token_lifetime=timedelta(days=2))
