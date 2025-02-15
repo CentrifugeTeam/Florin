@@ -5,9 +5,13 @@ resource "yandex_iam_service_account" "sa" {
 
 resource "yandex_resourcemanager_folder_iam_binding" "roles" {
   for_each = toset([
+     "container-registry.images.puller", "container-registry.images.pusher",
+    "serverless.containers.invoker", "serverless-containers.editor", "serverless.functions.invoker",
+    "iam.serviceAccounts.user",
+    "ydb.admin", "ymq.admin",
     "admin",
     "storage.admin",
-    "container-registry.admin", "container-registry.images.puller",
+    "container-registry.admin",
   ])
   members = [
     "serviceAccount:${yandex_iam_service_account.sa.id}"
