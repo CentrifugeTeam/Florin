@@ -30,11 +30,12 @@ class UsersManager(ModelManager):
         self.password_helper = pbkdf2_sha256
         super().__init__(User)
 
+    def _create_username(self):
+        return 'user_' + str(uuid4())
 
     async def create_user(
             self,
             session: AsyncSession,
-
             in_obj: UserCreate,
             *,
             commit: bool = True,
@@ -45,12 +46,13 @@ class UsersManager(ModelManager):
         in_obj.password = self.password_helper.hash(in_obj.password)
         create_data = in_obj.model_dump()
         create_data.update(attrs)
+        create_data['username'] = self._create_username()
 
         # Добавляем дефолтные значения полей для валидации уникальности
         for field, default in self.defaults.items():
             if field not in create_data:
                 create_data[field] = default
-        create_data['username'] = in_obj.login
+
         await self.run_db_validation(session, in_obj=create_data)
 
         create_data['type'] = 'password'
@@ -99,7 +101,7 @@ class UsersManager(ModelManager):
             'email': email,
             'first_name': user_data.get('first_name'),
             'last_name': user_data.get('last_name'),
-            'username': 'user_' + str(uuid4()),
+            'username': self._create_username(),
             'photo_url': user_data.get('picture'),
             'type': 'sso',
             'password': None, 
