@@ -1,6 +1,6 @@
 import json
-from db import User
-from conf import session_maker
+from src.db import User
+from src.conf import session_maker
 from sqlmodel import select
 
 def decode_token(token: str):
