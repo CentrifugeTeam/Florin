@@ -9,5 +9,6 @@ class Plan(UUIDMixin, SQLModel, table=True):
   __tablename__ = 'plans'
   day: int
   action: str
+  note: str
 
   plants: 'Plant' = Relationship(back_populates='plan')
