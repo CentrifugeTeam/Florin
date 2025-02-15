@@ -1,10 +1,16 @@
 import json
-from src.db import User
-from src.conf import session_maker
+
 from sqlmodel import select
+from src.conf import session_maker
+from src.db import Token, User
+
 
 def decode_token(token: str):
-  pass
+  stmt = select(Token).where(Token.token == token)
+  with session_maker() as session:
+    # TODO: test it
+    result = session.exec(stmt)
+    print(result)
 
 
 def handler(event: dict, context: dict):
