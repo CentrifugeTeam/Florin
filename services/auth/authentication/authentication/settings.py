@@ -9,8 +9,6 @@ class Settings(BaseSettings):
     OAUTH_KEY: str
     DOCUMENT_API_ENDPOINT: str
     DOCUMENT_DATABASE_PATH: str
-    AWS_ACCESS_KEY_ID: str
-    AWS_SECRET_ACCESS_KEY: str
     JWT_PRIVATE_KEY: str
 
     @property

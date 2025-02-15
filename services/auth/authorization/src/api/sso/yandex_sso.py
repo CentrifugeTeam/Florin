@@ -21,7 +21,7 @@ app = FastAPI()
 sso = YandexSSO(
   client_id=CLIENT_ID,
   client_secret=CLIENT_SECRET,
-  redirect_uri="https://auth.hackcentrifuge.ru/sso/yandex/callback", # DOMAIN + /sso/yandex/callback
+  redirect_uri=f"{DOMAIN}/sso/yandex/callback", # DOMAIN + /sso/yandex/callback
   allow_insecure_http=True,
 )
 
