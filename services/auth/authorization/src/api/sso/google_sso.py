@@ -4,7 +4,11 @@ import uvicorn
 from fastapi import FastAPI, Request
 import logging
 from fastapi_sso.sso.google import GoogleSSO
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status
+from ...deps import get_session
+from ...managers.users import user_manager
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 
 r = APIRouter(prefix="/google")
 load_dotenv()
@@ -18,7 +22,7 @@ app = FastAPI()
 sso = GoogleSSO(
   client_id=CLIENT_ID,
   client_secret=CLIENT_SECRET,
-  redirect_uri="http://127.0.0.1:8000/sso/google/callback", # DOMAIN + /sso/google/callback
+  redirect_uri="https://auth.hackcentrifuge.ru/sso/google/callback", # DOMAIN + /sso/google/callback
   allow_insecure_http=True,
 )
 
@@ -29,8 +33,14 @@ async def auth_init():
     return await sso.get_login_redirect(params={"prompt": "consent", "access_type": "offline"})
 
 
-@r.get("/callback")
-async def auth_callback(request: Request):
+@r.get("/callback", description="Callback после входа в Google", responses={
+  status.HTTP_400_BAD_REQUEST: {"description": "QAUTH2 error"}
+})
+async def auth_callback(request: Request,
+                        session: AsyncSession = Depends(get_session),):
   async with sso:
     user = await sso.verify_and_process(request)
-  return {"user": user}
+
+  user_data = user.__dict__
+  user_db = await user_manager.create_or_get_user(session, user_data)
+  return user_db

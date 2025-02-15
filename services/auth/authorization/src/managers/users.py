@@ -10,6 +10,8 @@ from ..db import User
 from starlette import status
 from passlib.hash import pbkdf2_sha256
 from ..adapters.files import file_manager
+from typing import Optional
+from uuid import uuid4
 
 
 class UsersManager(ModelManager):
@@ -57,7 +59,46 @@ class UsersManager(ModelManager):
 
         await session.refresh(db_obj, attribute_names=refresh_attribute_names)
         return db_obj
+    
+    async def create_or_get_user(
+        self,
+        session: AsyncSession,
+        user_data: dict,
+        *,
+        commit: bool = True,
+        refresh_attribute_names: Optional[Iterable[str]] = None,
+    ) -> User:
+        """
+        Метод для создания или получения пользователя из базы данных по email.
+        Если пользователь с данным email существует, то он будет возвращен.
+        Если нет — будет создан новый пользователь.
+        """
+        email = user_data.get('email')
 
+        query = select(User).where(User.email == email)
+        user_result = await session.exec(query)
+        user = user_result.first()
+
+        if user:
+            return user
+
+        # Создание нового пользователя
+        create_data = {
+            'email': email,
+            'first_name': user_data.get('first_name'),
+            'last_name': user_data.get('last_name'),
+            'username': 'user_' + str(uuid4()),
+            'photo_url': user_data.get('picture'),
+            'type': 'sso',
+            'password': None, 
+        }
+
+        db_obj: User = self.model(**create_data)
+        session.add(db_obj)
+        await self.save(session, commit=commit)
+
+        await session.refresh(db_obj, attribute_names=refresh_attribute_names)
+        return db_obj
 
 
 user_manager = UsersManager()

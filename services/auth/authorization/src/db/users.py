@@ -8,10 +8,9 @@ if TYPE_CHECKING:
     from .tokens import Token
 
 class User(UserRead, table=True):
-    login: str
-    password: str
+    password: str | None = None
     type: str
-
+    
     tokens: list['Token'] = Relationship(back_populates='user')
     __table_args__ = (UniqueConstraint('username'), )
 
