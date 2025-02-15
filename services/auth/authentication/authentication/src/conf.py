@@ -1,4 +1,4 @@
-from settings import Settings
+from .settings import Settings
 from sqlmodel import Session
 from ydb.iam.auth import YandexPassportOAuthIamCredentials
 from sqlalchemy import create_engine

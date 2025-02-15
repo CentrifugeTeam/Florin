@@ -101,3 +101,7 @@ ignore = [
 
 [tool.ruff.format]
 preview = true
+
+
+[tool.pytest]
+testpaths = ["tests"]
