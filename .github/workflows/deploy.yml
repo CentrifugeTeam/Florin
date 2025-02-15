@@ -20,6 +20,7 @@ jobs:
     # Set job outputs to values from filter step
     outputs:
       authorization: ${{ steps.filter.outputs.authorization }}
+      authentication: ${{ steps.filter.outputs.authentication }}
     steps:
     - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v3
