@@ -22,7 +22,7 @@ app = FastAPI()
 sso = GoogleSSO(
   client_id=CLIENT_ID,
   client_secret=CLIENT_SECRET,
-  redirect_uri="https://auth.hackcentrifuge.ru/sso/google/callback", # DOMAIN + /sso/google/callback
+  redirect_uri=f"{DOMAIN}/sso/google/callback", # DOMAIN + /sso/google/callback
   allow_insecure_http=True,
 )
 
