@@ -11,13 +11,16 @@ class UserBase(SQLModel):
 
 
 class UserCreate(UserBase):
-    login: str
     password: str
     photo: UploadFile | None = None
-    password: str
 
 class UserRead(UUIDMixin, UserBase):
     username: str = Field(sa_column=Column(String(256), unique=True, nullable=False))
     is_verified: bool = False
     photo_url: str | None = None
 
+
+
+class Login(SQLModel):
+    email: str
+    password: str

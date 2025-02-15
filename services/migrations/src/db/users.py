@@ -10,12 +10,11 @@ if TYPE_CHECKING:
 
 class User(UUIDMixin, SQLModel, table=True):
     __tablename__ = 'users'
-    login: str
-    password: str
+    password: str | None
     type: str
 
-    username: str = Field(sa_column=Column(String(256), unique=True)) # if login in SSO give username like APP_USER_NAME
-    email: str | None = None
+    username: str = Field(sa_column=Column(String(256), unique=True, nullable=False)) # if login in SSO give username like APP_USER_NAME
+    email: str
     is_verified: bool = False
     photo_url: str | None = None
 

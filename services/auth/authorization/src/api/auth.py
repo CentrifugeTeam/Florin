@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
-
 from ..adapters.token import token_adapter
 from ..db import User, Token
 from ..deps import get_session
@@ -29,7 +28,7 @@ async def login(
         credentials: OAuth2PasswordRequestForm = Depends(),
         session: AsyncSession = Depends(get_session)
 ):
-    stmt = select(User).where((credentials.username == User.login) & (User.type == 'password'))
+    stmt = select(User).where((credentials.username == User.email) & (User.type == 'password'))
     user = (await session.exec(stmt)).one_or_none()
     if not user:
         # Run the hasher to mitigate timing attack
