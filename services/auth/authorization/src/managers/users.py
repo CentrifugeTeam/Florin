@@ -10,6 +10,7 @@ from passlib.hash import pbkdf2_sha256
 from ..adapters.files import file_manager
 from typing import Optional
 from uuid import uuid4
+from sqlmodel import select
 
 CouldUploadFileHTTPException = HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not upload file')
 
