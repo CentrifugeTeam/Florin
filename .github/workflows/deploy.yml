@@ -67,7 +67,7 @@ jobs:
               GOOGLE_CLIENT_SECRET=${{secrets.GOOGLE_CLIENT_SECRET}}
               YANDEX_CLIENT_ID=${{secrets.YANDEX_CLIENT_ID}}
               YANDEX_CLIENT_SECRET=${{secrets.YANDEX_CLIENT_SECRET}}
-              DOMAIN=https://auth.hackcentrifuge.ru
+              DOMAIN=https://auth.hackcentrifuge.ru/auth
             secrets: |
                 OAUTH_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/OAUTH_KEY
                 DOCUMENT_API_ENDPOINT=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_API_ENDPOINT
