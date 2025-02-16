@@ -3,8 +3,8 @@ from uuid import UUID
 from sqlmodel import SQLModel
 from sqlmodel import Relationship, Field
 
-from ..base.schema import UUIDMixin
-from .schema import UserRead
+from ..base.scheme import UUIDMixin
+from .scheme import UserRead
 
 class User(UUIDMixin, UserRead, table=True):
     password: str | None = None

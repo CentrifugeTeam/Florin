@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from fastapi_sqlalchemy_toolkit.model_manager import ModelManager
 from  fastapi_libkit.responses import ErrorModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .schema import UserCreate
+from .scheme import UserCreate
 from .db import User
 from starlette import status
 from passlib.hash import pbkdf2_sha256
@@ -30,9 +30,6 @@ class UsersManager(ModelManager):
         self.password_helper = pbkdf2_sha256
         super().__init__(User)
 
-    def _create_username(self):
-        return 'user_' + str(uuid4())
-
     async def create_user(
             self,
             session: AsyncSession,
@@ -46,7 +43,6 @@ class UsersManager(ModelManager):
         in_obj.password = self.password_helper.hash(in_obj.password)
         create_data = in_obj.model_dump()
         create_data.update(attrs)
-        create_data['username'] = self._create_username()
 
         # Добавляем дефолтные значения полей для валидации уникальности
         for field, default in self.defaults.items():
@@ -101,7 +97,7 @@ class UsersManager(ModelManager):
             'email': email,
             'first_name': user_data.get('first_name'),
             'last_name': user_data.get('last_name'),
-            'username': self._create_username(),
+            'username': 'Пользователь',
             'photo_url': user_data.get('picture'),
             'type': 'sso',
             'password': None,

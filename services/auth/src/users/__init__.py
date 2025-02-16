@@ -7,7 +7,7 @@ from .db import User, Token
 from ..deps import GetSession
 from ..authenticator import authenticator
 from .manager import user_manager, to_openapi, CouldUploadFileHTTPException
-from .schema import PermissionTokenRead, UserCreate, UserRead
+from .scheme import PermissionTokenRead, UserCreate, UserRead
 from fastapi_libkit.schemas import as_form
 from fastapi_libkit.responses import auth_responses
 
