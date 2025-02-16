@@ -1,12 +1,10 @@
 import os
 from dotenv import load_dotenv
-import uvicorn
 from fastapi import FastAPI, Request
-import logging
 from fastapi_sso.sso.yandex import YandexSSO
 from fastapi import APIRouter, Depends, status
-from ...deps import get_session
-from ...managers.users import user_manager
+from ..deps import get_session
+from ..users.manager import user_manager
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 r = APIRouter(prefix="/yandex")
@@ -15,8 +13,6 @@ load_dotenv()
 CLIENT_ID = os.getenv("YANDEX_CLIENT_ID")
 CLIENT_SECRET = os.getenv("YANDEX_CLIENT_SECRET")
 DOMAIN = os.getenv("DOMAIN")
-
-app = FastAPI()
 
 sso = YandexSSO(
   client_id=CLIENT_ID,

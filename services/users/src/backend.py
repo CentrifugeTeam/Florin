@@ -37,7 +37,7 @@ class AuthBackend:
                 cred: Annotated[HTTPAuthorizationCredentials, Depends(security)],
                 session: AsyncSession = Depends(get_session)
         ):
-            user = await token_manager.authenticate(cred.credentials, session)
+            user = await token_manager.authenticator(cred.credentials, session)
             exc = UnauthorizedException
             if user:
                 exc = ForbidException

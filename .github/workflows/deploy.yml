@@ -19,23 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      authorization: ${{ steps.filter.outputs.authorization }}
-      authentication: ${{ steps.filter.outputs.authentication }}
+      auth: ${{ steps.filter.outputs.auth }}
     steps:
     - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v3
       id: filter
       with:
         filters: |
-          authorization:
-            - 'services/auth/authorization/**'
-          authentication:
-            - 'services/auth/authentication/**'
+          auth:
+            - 'services/auth/*'
 
   # JOB to build and test authorization code
-  authorization:
+  auth:
     needs: changes
-    if: ${{ needs.changes.outputs.authorization == 'true' }}
+    if: ${{ needs.changes.outputs.auth == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +44,7 @@ jobs:
       - uses: yezz123/setup-uv@v4
 
       - name: Create Zip Archieve
-        working-directory: services/auth/authorization/
+        working-directory: services/auth/
         run: |
             uv sync
             uv pip freeze > requirements.txt
@@ -59,8 +56,8 @@ jobs:
             yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
             folder-id: ${{env.FOLDER_ID}}
             service-account: ${{env.SERVICE_ACCOUNT_ID}}
-            source-root: services/auth/authorization/
-            function-name: 'authorization'
+            source-root: services/auth
+            function-name: 'auth'
             runtime: 'python312'
             memory: '256Mb'
             entrypoint: 'main.handler'
@@ -90,56 +87,3 @@ jobs:
                 .*
                 
             execution-timeout: 1
-
-  authentication:
-    needs: changes
-    if: ${{ needs.changes.outputs.authentication == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - uses: yezz123/setup-uv@v4
-
-      - name: Create Zip Archieve
-        working-directory: services/auth/authentication
-        run: |
-          uv sync
-          uv pip freeze > authentication/requirements.txt
-
-      - name: Deploy Function
-        id: sls-func
-        uses: yc-actions/yc-sls-function@v2.12.0
-        with:
-          yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
-          folder-id: ${{env.FOLDER_ID}}
-          service-account: ${{env.SERVICE_ACCOUNT_ID}}
-          source-root: services/auth/authentication/authentication
-          function-name: 'authentication'
-          runtime: 'python312'
-          memory: '256Mb'
-          entrypoint: 'main.handler'
-          bucket: ${{env.STUFF_BUCKET}}
-          secrets: |
-            OAUTH_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/OAUTH_KEY
-            DOCUMENT_API_ENDPOINT=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_API_ENDPOINT
-            DOCUMENT_DATABASE_PATH=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_DATABASE_PATH
-            JWT_PRIVATE_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/JWT_PRIVATE_KEY
-
-          include: |
-            **/*.py
-            requirements.txt
-          exclude: |
-            .venv 
-            uv.lock
-            README.md
-            pyproject.toml
-            .*
-
-          execution-timeout: 1
-
-
-

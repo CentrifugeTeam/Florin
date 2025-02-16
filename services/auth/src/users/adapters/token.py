@@ -1,9 +1,10 @@
-from ..conf import settings
+from ...conf import settings
 from datetime import datetime, timezone, timedelta
 from uuid import UUID
 import jwt
-from ..exceptions import JwtAuthError
 
+class JwtAuthError(Exception):
+    pass
 
 class TokenAdapter:
     def __init__(

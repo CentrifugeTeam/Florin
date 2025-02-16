@@ -1,13 +1,13 @@
 from typing import Iterable, Any
-from fastapi import UploadFile, HTTPException
+from fastapi import HTTPException
 from fastapi_sqlalchemy_toolkit.model_manager import ModelManager
 from  fastapi_libkit.responses import ErrorModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from ..schemas.users import UserCreate
-from ..db import User
+from .schema import UserCreate
+from .db import User
 from starlette import status
 from passlib.hash import pbkdf2_sha256
-from ..adapters.files import file_manager
+from .adapters.files import file_manager
 from typing import Optional
 from uuid import uuid4
 from sqlmodel import select
@@ -73,14 +73,14 @@ class UsersManager(ModelManager):
 
         await session.refresh(db_obj, attribute_names=refresh_attribute_names)
         return db_obj
-    
+
     async def create_or_get_user(
-        self,
-        session: AsyncSession,
-        user_data: dict,
-        *,
-        commit: bool = True,
-        refresh_attribute_names: Optional[Iterable[str]] = None,
+            self,
+            session: AsyncSession,
+            user_data: dict,
+            *,
+            commit: bool = True,
+            refresh_attribute_names: Optional[Iterable[str]] = None,
     ) -> User:
         """
         Метод для создания или получения пользователя из базы данных по email.
@@ -104,7 +104,7 @@ class UsersManager(ModelManager):
             'username': self._create_username(),
             'photo_url': user_data.get('picture'),
             'type': 'sso',
-            'password': None, 
+            'password': None,
         }
 
         db_obj: User = self.model(**create_data)
