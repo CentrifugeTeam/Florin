@@ -1,4 +1,4 @@
-from conf import settings
+from .conf import settings
 from datetime import datetime, timezone, timedelta
 from uuid import UUID
 import jwt
