@@ -12,13 +12,11 @@ class User(UUIDMixin, SQLModel, table=True):
     __tablename__ = 'users'
     password: str | None
     type: str
-
-    username: str = Field(sa_column=Column(String(256), unique=True, nullable=False)) # if login in SSO give username like APP_USER_NAME
+    username: str = Field(sa_column=Column(String(256), nullable=False)) # if login in SSO give username like APP_USER_NAME
     email: str
     is_verified: bool = False
     photo_url: str | None = None
 
-    __table_args__ = (UniqueConstraint('username'), )
     tokens: list['Token'] = Relationship(back_populates='user')
     user: 'UserPlant' = Relationship(back_populates='user')
 
