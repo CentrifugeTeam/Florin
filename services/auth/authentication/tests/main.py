@@ -13,5 +13,5 @@ def test_handler():
     event = {}
     context = {}
 
-    event['body'] = '{"token":"hello"}'
+    event['body'] = '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NGZkMGExYi00NjdlLTQwMGQtOWZiZC01NDExZWU2MmNhODYiLCJleHAiOjE3Mzk4ODM4Mzh9._tviqVJe-dz4QVdN4Et7WXNpi1RyRHoF7v7FpbzKpOg"}'
     handler(event, context)

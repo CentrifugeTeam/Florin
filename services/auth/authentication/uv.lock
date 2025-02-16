@@ -98,7 +98,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "sqlmodel" },
     { name = "ydb", extra = ["yc"] },
-    { name = "ydb-async" },
+    { name = "ydb-sqlalchemy" },
 ]
 
 [package.dev-dependencies]
@@ -116,7 +116,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "sqlmodel", specifier = ">=0.0.22" },
     { name = "ydb", extras = ["yc"], specifier = ">=3.18.15" },
-    { name = "ydb-async", specifier = ">=0.0.2" },
+    { name = "ydb-sqlalchemy", specifier = ">=0.1.6" },
 ]
 
 [package.metadata.requires-dev]
@@ -965,18 +965,6 @@ wheels = [
 [package.optional-dependencies]
 yc = [
     { name = "yandexcloud" },
-]
-
-[[package]]
-name = "ydb-async"
-version = "0.0.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ydb-sqlalchemy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f7/0f/320a80e9739a85cc69645657c8c83a670823dd2ac10438fe357e9005924e/ydb_async-0.0.2.tar.gz", hash = "sha256:8ab5853d646ee590a3f12934fc0d39b95d6fdd26e2db3b410d27106c171ae88a", size = 5920 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1d/86/131ce6a840639d67738652d66ec26dcbed0c3c34eece726f9b8a95ac4d8a/ydb_async-0.0.2-py3-none-any.whl", hash = "sha256:c3d4056bbcc2e819e9f47bba0031e48f88e30190699b011755862102b4416508", size = 3497 },
 ]
 
 [[package]]
