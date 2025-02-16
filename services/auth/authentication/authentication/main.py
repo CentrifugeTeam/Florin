@@ -6,6 +6,13 @@ from src.conf import driver, settings
 from ydb import QuerySessionPool
 
 
+class HttpException(Exception):
+  def __init__(self, status_code, message: dict | str):
+    self.message = message
+    self.status_code = status_code
+
+
+
 def decode_token(token: str):
   try:
     payload = jwt.decode(token, settings.JWT_PRIVATE_KEY, algorithms=['HS256'])
@@ -27,13 +34,48 @@ def decode_token(token: str):
   return user
 
 
+def fetch(event: dict, context: dict):
+  try:
+    token = json.loads(event['body'])['token']
+  except:
+    raise HttpException(status_code=400, message='Bad Request')
+
+  db = decode_token(token)
+  return db[0].rows[0]
+
+
+def create(event: dict, context: dict):
+  pass
 
 
 def handler(event: dict, context: dict):
-  token = json.loads(event['body'])['token']
-  user = decode_token(token)
+  route_path = event['path']
+  try:
+    if route_path == '/fetch':
+      response = fetch(event, context)
+    elif route_path == '/create':
+      response = create(event, context)
+    else:
+      return {
+        'statusCode': 404,
+        'body': 'Not found',
+        'isBase64Encoded': False,
+      }
+  except HttpException as exc:
+    return {
+      'statusCode': exc.status_code,
+      'body': exc.message,
+      'isBase64Encoded': False,
+    }
+  except Exception as exc:
+    return {
+      'statusCode': 500,
+      'body': "Server Error",
+      'isBase64Encoded': False,
+    }
 
   return {
-    'body': user,
+    'statusCode': 200,
+    'body': response,
     'isBase64Encoded': False,
   }

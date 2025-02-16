@@ -20,9 +20,6 @@ classifiers = [
 
 dependencies = [
     "pydantic-settings>=2.7.1",
-    "python-dotenv>=1.0.1",
-    "sqlmodel>=0.0.22",
-    "ydb-sqlalchemy>=0.1.6",
     "ydb[yc]>=3.18.15",
 ]
 
