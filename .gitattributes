@@ -7,3 +7,4 @@
 /services/plants/uv.lock filter=lfs diff=lfs merge=lfs -text
 /services/auth/authentication/uv.lock filter=lfs diff=lfs merge=lfs -text
 /services/migrations/src/seed/plants/test.ipynb filter=lfs diff=lfs merge=lfs -text
+/services/auth/uv.lock filter=lfs diff=lfs merge=lfs -text

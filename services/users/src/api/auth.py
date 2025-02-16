@@ -42,7 +42,7 @@ async def login(
         responses={**auth_responses})
 async def logout(
         *,
-        user: User = Depends(auth_backend.authenticate()),
+        user: User = Depends(auth_backend.authenticator()),
         cred: Annotated[OAuth2PasswordRequestForm, Depends(auth_backend.security)],
         session: AsyncSession = Depends(get_session)
 ):

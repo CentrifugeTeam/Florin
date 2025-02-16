@@ -1,11 +1,13 @@
 from aiobotocore.session import get_session
 from botocore.exceptions import ClientError
 from fastapi import UploadFile
-from ..conf import settings
+from ...conf import settings
 from logging import getLogger
 from uuid import uuid4
 
-from ..exceptions import FileException
+
+class FileException(Exception):
+    pass
 
 logger = getLogger(__name__)
 
