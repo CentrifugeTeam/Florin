@@ -9,6 +9,7 @@ from .manager import user_manager, to_openapi, CouldUploadFileHTTPException
 from .scheme import PermissionTokenRead, UserCreate, UserRead
 from typing import Annotated
 from fastapi_libkit.responses import auth_responses
+from fastapi_libkit.schemas import as_form
 
 
 r = APIRouter(prefix='/users', tags=['Users'])
@@ -17,7 +18,7 @@ r = APIRouter(prefix='/users', tags=['Users'])
 @r.post('/signup', response_model=UserRead, responses={**to_openapi(CouldUploadFileHTTPException)})
 async def signup(
         session: GetSession,
-        user: Annotated[UserCreate, Form()]
+        user: UserCreate = Depends(as_form(UserCreate))
                  ):
     return await user_manager.create_user(session, user)
 
