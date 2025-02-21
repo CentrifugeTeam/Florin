@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:47d1ef2f3d0fc083031b6da2c5f2af260c5820bf8a8dd45bbf49627afed40011
-size 294
+from sqlmodel import SQLModel, Relationship
+from .mixins import UUIDMixin
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+  from .plants import Plant
+
+class Rank(UUIDMixin, SQLModel, table=True):
+  __tablename__ = 'ranks'
+  name: str
+
+  plants: 'Plant' = Relationship(back_populates='rank')

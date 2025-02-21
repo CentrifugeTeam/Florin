@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e21fbd2c727ebb2284ae2714f251f2b6b0df3f6c9651678f99d9299b5f97cb64
-size 446
+from fastapi import UploadFile
+from pydantic import BaseModel
+from sqlmodel import SQLModel
+
+class UserBase(SQLModel):
+    __tablename__ = 'users'
+    username: str
+    email: str
+
+class UserCreate(UserBase):
+    password: str
+    photo: UploadFile | None = None
+
+class UserRead(UserBase):
+    is_verified: bool = False
+    photo_url: str | None = None
+
+
+class PermissionTokenRead(BaseModel):
+    access_token: str
+    token_type: str = 'bearer'

@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:42172aa54d277bd9c27081416def8f4f1c243038295537dec4d6bc2a1f92224e
-size 238
+from sqlalchemy.ext.asyncio import AsyncSession
+from ..conf import session_maker 
+from .plants_service import Plants
+
+async def main():
+  async with session_maker() as session:
+    plants = Plants(session)
+    result = await plants.run()

@@ -1,3 +1,89 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1e18494fb3674beeacb2999fecbc4467c31d0191da768ae1edc372f4222ef948
-size 2938
+name: Deploy
+
+on: [push, workflow_dispatch]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env: 
+    STUFF_BUCKET: auth-sevice-internal-use-bucket
+    FOLDER_ID: b1g4o9t4vgcbnkpunqeu
+    SERVICE_ACCOUNT_ID: ajetqfs3ng6e1gjv7mdr
+    SECRET_VERSION_ID: e6qe0ts1dc9g0h1h4kob
+    SECRET_ID: e6q78o6erk6o9suemkh4
+
+jobs:
+  # JOB to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      auth: ${{ steps.filter.outputs.api }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          api:
+            - 'services/api/*'
+
+  # JOB to build and test authorization code
+  api:
+    needs: changes
+    if: ${{ needs.changes.outputs.api == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+            python-version: "3.12"
+
+      - uses: yezz123/setup-uv@v4
+
+      - name: Create Zip Archieve
+        working-directory: services/api/
+        run: |
+            uv sync
+            uv pip freeze > requirements.txt
+
+      - name: Deploy Function
+        id: sls-func
+        uses: yc-actions/yc-sls-function@v2.12.0
+        with:
+            yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
+            folder-id: ${{env.FOLDER_ID}}
+            service-account: ${{env.SERVICE_ACCOUNT_ID}}
+            source-root: services/api
+            function-name: 'api'
+            runtime: 'python312'
+            memory: '256Mb'
+            entrypoint: 'main.handler'
+            bucket: ${{env.STUFF_BUCKET}}
+            environment: |
+              GOOGLE_CLIENT_ID=${{secrets.GOOGLE_CLIENT_ID}}
+              GOOGLE_CLIENT_SECRET=${{secrets.GOOGLE_CLIENT_SECRET}}
+              YANDEX_CLIENT_ID=${{secrets.YANDEX_CLIENT_ID}}
+              YANDEX_CLIENT_SECRET=${{secrets.YANDEX_CLIENT_SECRET}}
+              DOMAIN=https://auth.hackcentrifuge.ru/auth
+            secrets: |
+                OAUTH_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/OAUTH_KEY
+                DOCUMENT_API_ENDPOINT=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_API_ENDPOINT
+                DOCUMENT_DATABASE_PATH=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/DOCUMENT_DATABASE_PATH
+                AWS_ACCESS_KEY_ID=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/AWS_SECRET_ACCESS_KEY
+                JWT_PRIVATE_KEY=${{env.SECRET_ID}}/${{env.SECRET_VERSION_ID}}/JWT_PRIVATE_KEY
+                
+            include: |
+                **/*.py
+                requirements.txt
+            exclude: |
+                .venv 
+                uv.lock
+                README.md
+                pyproject.toml
+                .*
+                
+            execution-timeout: 1

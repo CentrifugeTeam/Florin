@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:08b3df073eb6a5e8aef505f0271dad69d1de0d200bddd3301fe68dcd13801bdb
-size 919
+FROM python:3.12 AS base
+
+ENV PYTHONDONTWRITEBYTECODE 1  # Отключаем создание .pyc файлов
+ENV PYTHONUNBUFFERED 1  # Убеждаемся, что вывод логов сразу идет в консоль (без буферизации)
+
+ENV VENV_PATH="/opt/venv"
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+WORKDIR /app
+
+FROM ghcr.io/astral-sh/uv:0.5.21 AS uv
+
+FROM base AS builder
+ENV UV_COMPILE_BYTECODE=1
+
+ENV UV_NO_INSTALLER_METADATA=1
+ENV UV_PROJECT_ENVIRONMENT=$VENV_PATH
+ENV UV_LINK_MODE=copy
+
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --no-install-project --no-editable
+
+FROM base AS runner
+COPY --from=builder ${VENV_PATH} ${VENV_PATH}
+ENV PORT=8080
+COPY . .
+CMD uvicorn main:app --port ${PORT} --host 0.0.0.0

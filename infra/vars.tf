@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:34852f5c8d3f1134a09d495ed6648ffef974ce6e2fb3fa6d48ee02ecc5fb3cda
-size 290
+variable "token" {
+  description = "Variable for Yandex Cloud token"
+
+}
+variable "cloud_id" {
+  description = "Variable for Yandex Cloud cloud_id"
+
+}
+
+variable "folder_id" {
+  description = "Variable for Yandex Cloud folder_id"
+
+}
+
+
+
+variable "oauth_key" {
+
+}
+
+variable "jwt_private_key" {}

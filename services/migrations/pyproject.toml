@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:df64fdd45d736092004114b6e12260a0ef5123cb2c75133663a715946f41760c
-size 406
+[project]
+name = "migrations"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.14.1",
+    "pydantic-settings>=2.7.1",
+    "sqlmodel>=0.0.22",
+    "ydb[yc]>=3.18.15",
+    "ydb-async>=0.0.2",
+    "greenlet>=3.1.1",
+    "torch>=2.6.0",
+    "googletrans>=4.0.2",
+    "diffusers>=0.32.2",
+    "transformers>=4.48.3",
+]

@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0dc4f2cc138134062c9c6730274aee4eb2467161cdb4b2b5fba09b46fdad11a5
-size 518
+from .settings import Settings
+from sqlmodel.ext.asyncio.session import AsyncSession
+from ydb.aio.iam import YandexPassportOAuthIamCredentials
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+settings = Settings() # type: ignore
+engine = create_async_engine(settings.sqlalchemy_url, connect_args={
+    "credentials": YandexPassportOAuthIamCredentials(settings.OAUTH_KEY),
+    'protocol': 'grpcs'})
+
+session_maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+
+
+
+

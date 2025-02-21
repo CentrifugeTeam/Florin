@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ebb4609ec69e79575cd858ab912b263f91e6d3530d3e6378e7ed4e3ea5dffcb3
-size 674
+from sqlalchemy import Column, String
+from uuid import UUID
+from sqlmodel import SQLModel
+from sqlmodel import Relationship, Field
+
+from ..base.scheme import UUIDMixin
+from .scheme import UserRead
+
+class User(UUIDMixin, UserRead, table=True):
+    password: str | None = None
+    type: str
+    username: str = Field(sa_column=Column(String(256), unique=True, nullable=False))
+    email: str = Field(unique=True)
+
+    tokens: list['Token'] = Relationship(back_populates='user')
+
+
+class Token(UUIDMixin, SQLModel, table=True):
+    __tablename__ = 'tokens'
+    token: str
+    user_id: UUID = Field(foreign_key='users.id')
+    user: 'User' = Relationship(back_populates='tokens')
