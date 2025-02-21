@@ -19,20 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      auth: ${{ steps.filter.outputs.auth }}
+      auth: ${{ steps.filter.outputs.api }}
     steps:
     - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v3
       id: filter
       with:
         filters: |
-          auth:
-            - 'services/auth/*'
+          api:
+            - 'services/api/*'
 
   # JOB to build and test authorization code
-  auth:
+  api:
     needs: changes
-    if: ${{ needs.changes.outputs.auth == 'true' }}
+    if: ${{ needs.changes.outputs.api == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
       - uses: yezz123/setup-uv@v4
 
       - name: Create Zip Archieve
-        working-directory: services/auth/
+        working-directory: services/api/
         run: |
             uv sync
             uv pip freeze > requirements.txt
@@ -56,8 +56,8 @@ jobs:
             yc-sa-json-credentials: ${{secrets.YC_SA_JSON_CREDENTIALS}}
             folder-id: ${{env.FOLDER_ID}}
             service-account: ${{env.SERVICE_ACCOUNT_ID}}
-            source-root: services/auth
-            function-name: 'auth'
+            source-root: services/api
+            function-name: 'api'
             runtime: 'python312'
             memory: '256Mb'
             entrypoint: 'main.handler'
