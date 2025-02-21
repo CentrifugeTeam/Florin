@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      auth: ${{ steps.filter.outputs.api }}
+      api: ${{ steps.filter.outputs.api }}
     steps:
     - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v3
