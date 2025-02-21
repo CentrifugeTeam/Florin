@@ -1,6 +1,3 @@
-resource "yandex_storage_bucket" "internal" {
-  bucket     = "${local.resource_prefix}-internal-use-bucket"
-  secret_key = yandex_iam_service_account_static_access_key.keys.secret_key
-  access_key = yandex_iam_service_account_static_access_key.keys.access_key
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:d0a92481a34e85cdb02691d97e8b466a56cc5b465efbabe015c44025362f82a5
+size 263

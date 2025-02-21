@@ -1,6 +1,3 @@
-from fastapi import APIRouter
-from . import google_sso, yandex_sso
-
-r = APIRouter(prefix="/sso", tags=['SSO'])
-r.include_router(google_sso.r)
-r.include_router(yandex_sso.r)
+version https://git-lfs.github.com/spec/v1
+oid sha256:6bd2f14d33ba9882641d0945a4ae58277bec7ca894f59757abe113d5869d798c
+size 172

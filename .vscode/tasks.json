@@ -1,26 +1,3 @@
-{
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "docker-build",
-			"label": "docker-build",
-			"dockerBuild": {
-				"tag": "serviceauth:latest",
-				"dockerfile": "Dockerfile",
-				"context": "${workspaceFolder}/services/api",
-			}
-		},
-		{
-			"type": "docker-run",
-			"label": "docker-run: debug",
-			"dependsOn": [
-				"docker-build"
-			],
-			"dockerRun": {
-				"command": "ls"
-				
-			}
-
-		}
-	]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:fd53b5e5b12f07a859d96480ab4840591b62fab3cac6d391fc86a1fd30a20aa1
+size 401

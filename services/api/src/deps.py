@@ -1,12 +1,3 @@
-from typing import Annotated
-from fastapi import Depends
-from sqlmodel.ext.asyncio.session import AsyncSession
-from .conf import session_maker
-
-async def get_session():
-    async with session_maker() as session:
-        yield session
-
-
-
-GetSession = Annotated[AsyncSession, Depends(get_session)]
+version https://git-lfs.github.com/spec/v1
+oid sha256:5f3ceffaf132f0361cf5db702626cc072ccfac01811caf18c915698a40b1a32b
+size 295

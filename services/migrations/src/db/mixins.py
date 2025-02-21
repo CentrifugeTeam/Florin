@@ -1,6 +1,3 @@
-from sqlmodel import Field
-from uuid import UUID, uuid4
-
-
-class UUIDMixin:
-    id: UUID = Field(primary_key=True, default_factory=uuid4)
+version https://git-lfs.github.com/spec/v1
+oid sha256:f00f06b0caffc085df4fb3fdbc3556b1b58edf6896c23260f810eee24b29e0b0
+size 137

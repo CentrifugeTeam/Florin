@@ -1,12 +1,3 @@
-from sqlmodel import SQLModel, Relationship
-from .mixins import UUIDMixin
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-  from .plants import Plant
-
-class Family(UUIDMixin, SQLModel, table=True):
-  __tablename__ = 'families'
-  name: str
-
-  plants: 'Plant' = Relationship(back_populates='family')
+version https://git-lfs.github.com/spec/v1
+oid sha256:70d24146bc86264527ae7a7355a57d00603f7073ca2074a4719cdeda5209dc97
+size 301
