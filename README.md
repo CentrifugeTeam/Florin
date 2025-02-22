@@ -2,7 +2,9 @@
 
 ## Полезные материалы
 
-- [Swagger](https://api.hackcentrifuge.ru/auth/docs)
+- Swagger
+1) [Сервис api](https://api.hackcentrifuge.ru/api/docs)
+2) [Сервис моделей машинного обучения](https://api.hackcentrifuge.ru/ai/docs)
 - Подлючение к YDB
 
 Для подлючения к YDB (Yandex DataBase) с **Dbeaver** нужно:
