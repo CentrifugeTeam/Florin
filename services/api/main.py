@@ -4,11 +4,11 @@ from mangum import Mangum
 from src.modules import users, sso
 
 
-app = FastAPI(root_path='/auth')
+app = FastAPI(root_path='/api')
 app.include_router(users.r)
 app.include_router(sso.r)
 
-handler = Mangum(app, custom_handlers=[HTTPGateway], api_gateway_base_path='/auth')
+handler = Mangum(app, custom_handlers=[HTTPGateway], api_gateway_base_path='/api')
 
 if __name__ == '__main__':
   import uvicorn
