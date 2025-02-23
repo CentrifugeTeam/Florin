@@ -16,14 +16,8 @@ provider "yandex" {
 
 
 
-
-resource "yandex_co" "name" {
-  
-}
-
-
 locals {
   resource_prefix = "${local.project_name}"
   zone            = "ru-central1-a"
-  project_name    = "Florin"
+  project_name    = "florin"
 }
