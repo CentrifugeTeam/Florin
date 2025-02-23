@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import select, delete
+from sqlalchemy import text
 from .adapters.token import token_adapter
 from .db import User, Token
 from ...deps import GetSession
@@ -8,17 +9,21 @@ from .authenticator import authenticator
 from .manager import user_manager, to_openapi, CouldUploadFileHTTPException
 from .scheme import PermissionTokenRead, UserCreate, UserRead
 from typing import Annotated
-from fastapi_libkit.responses import auth_responses
-from fastapi_libkit.schemas import as_form
 
 
 r = APIRouter(prefix='/users', tags=['Users'])
+
+@r.get('/hello')
+async def hello(session: GetSession):
+    
+    result  = (await session.execute(text("SELECT 1"))).scalar()
+    return {'hello': f'{result}'}
 
 
 @r.post('/signup', response_model=UserRead, responses={**to_openapi(CouldUploadFileHTTPException)})
 async def signup(
         session: GetSession,
-        user: UserCreate = Depends(as_form(UserCreate))
+        user: Annotated[UserCreate, Form(media_type='multipart/form-data')]
                  ):
     return await user_manager.create_user(session, user)
 
@@ -49,7 +54,7 @@ async def login(
 
 
 @r.post('/logout', status_code=status.HTTP_204_NO_CONTENT,
-        responses={**auth_responses})
+        responses={})
 async def logout(
         *,
         user: UserRead = Depends(authenticator()),

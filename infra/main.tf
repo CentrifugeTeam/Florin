@@ -15,14 +15,15 @@ provider "yandex" {
 }
 
 
-resource "yandex_ydb_database_serverless" "ydb" {
-  name = "ydb"
-}
 
+
+resource "yandex_co" "name" {
+  
+}
 
 
 locals {
   resource_prefix = "${local.project_name}"
   zone            = "ru-central1-a"
-  project_name    = "auth-sevice"
+  project_name    = "Florin"
 }
