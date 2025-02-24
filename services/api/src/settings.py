@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict, YamlConfigSettingsSource, PydanticBaseSettingsSource
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, PostgresDsn
 from pathlib import Path
 
@@ -10,7 +10,6 @@ class DatabaseSettings(BaseSettings):
     host: str
     port: int
     db: str
-    
 
     @property
     def sqlalchemy_url(self) -> str:
@@ -27,18 +26,6 @@ class DatabaseSettings(BaseSettings):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        extra='allow', yaml_file=Path().parent.parent / 'config.yaml')
+    model_config = SettingsConfigDict(extra='allow')
     JWT_PRIVATE_KEY: str = 'hello'
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
-
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        return (YamlConfigSettingsSource(settings_cls), )

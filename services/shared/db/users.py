@@ -11,6 +11,7 @@ class User(UUIDMixin, SQLModel, table=True):
     username: str = Field(sa_column=Column(String(256), nullable=False)) # if login in SSO give username like APP_USER_NAME
     email: str
     is_verified: bool = False
+    is_superuser: bool = False
     photo_url: str | None = None
     tokens: list['Token'] = Relationship(back_populates='user')
     
@@ -28,5 +29,7 @@ class Role(UUIDMixin, SQLModel, table=True):
     users: list['User'] = Relationship(back_populates='role')
     
 class UserRole(UUIDMixin, SQLModel, table=True):
-    pass
+    __tablename__ = 'user_roles'
+    user_id: UUID = Field(foreign_key='users.id')
+    role_id: UUID = Field(foreign_key='roles.id')
     

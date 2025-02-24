@@ -27,4 +27,8 @@ FROM base AS runner
 COPY --from=builder ${VENV_PATH} ${VENV_PATH}
 ENV PORT=8080
 COPY . .
+
+RUN chmod +x alembic.sh
+
+ENTRYPOINT [ "/app/alembic.sh" ]
 CMD uvicorn main:app --port ${PORT} --host 0.0.0.0

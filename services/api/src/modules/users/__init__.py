@@ -13,13 +13,6 @@ from typing import Annotated
 
 r = APIRouter(prefix='/users', tags=['Users'])
 
-@r.get('/hello')
-async def hello(session: GetSession):
-    
-    result  = (await session.execute(text("SELECT 1"))).scalar()
-    return {'hello': f'{result}'}
-
-
 @r.post('/signup', response_model=UserRead, responses={**to_openapi(CouldUploadFileHTTPException)})
 async def signup(
         session: GetSession,
