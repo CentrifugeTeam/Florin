@@ -20,12 +20,24 @@
 		// Configure properties specific to VS Code.
 		"vscode": {
 			"settings": {
+				"git.enabled": true,
                 "python.defaultInterpreterPath": "/workspace/services/api/.venv/bin/python"
             },
 			"extensions": [
+				"github.vscode-pull-request-github",
 				"streetsidesoftware.code-spell-checker"
 			]
 		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/git-lfs:1": {
+			"version": "latest"
+		}
+		
+		
 	},
 	"workspaceFolder": "/workspace/services/api",
 	// Use 'postCreateCommand' to run commands after the container is created.
