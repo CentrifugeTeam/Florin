@@ -1,11 +1,7 @@
 from sqlalchemy import Column, String, UniqueConstraint
 from sqlmodel import SQLModel, Field, Relationship
 from .mixins import UUIDMixin
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .tokens import Token
-    from user_plants import UserPlant
+from uuid import UUID
 
 
 class User(UUIDMixin, SQLModel, table=True):
@@ -16,7 +12,21 @@ class User(UUIDMixin, SQLModel, table=True):
     email: str
     is_verified: bool = False
     photo_url: str | None = None
-
     tokens: list['Token'] = Relationship(back_populates='user')
-    user: 'UserPlant' = Relationship(back_populates='user')
+    
 
+class Token(UUIDMixin, SQLModel, table=True):
+    __tablename__ = 'tokens'
+    token: str
+    user_id: UUID = Field(foreign_key='users.id')
+    user: 'User' = Relationship(back_populates='tokens')
+    
+
+class Role(UUIDMixin, SQLModel, table=True):
+    __tablename__ = 'roles'
+    name: str
+    users: list['User'] = Relationship(back_populates='role')
+    
+class UserRole(UUIDMixin, SQLModel, table=True):
+    pass
+    
