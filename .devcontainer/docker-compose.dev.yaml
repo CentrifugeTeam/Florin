@@ -7,7 +7,6 @@ services:
 
     volumes:
       - "..:/workspace:cached"
-    # network_mode: service:db
     environment:
       - PORT=8080
       - POSTGRES_HOST=db
@@ -15,31 +14,20 @@ services:
       - .env
     command: ["sleep", "infinity"]
 
-  nginx:
-    image: nginx:latest
-    ports: ["80:80"]
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8002:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./cors.conf:/etc/nginx/cors.conf
-    restart: always
-    depends_on:
-      - devcontainer
+      - pgadmin_volume:/var/lib/pgadmin
 
-
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   ports:
-  #     - "8002:80"
-  #   volumes:
-  #     - pgadmin_volume:/var/lib/pgadmin
-
-  #   environment:
-  #     - PGADMIN_DEFAULT_EMAIL=user@example.com
-  #     - PGADMIN_DEFAULT_PASSWORD=12345
-  #     - PGADMIN_CONFIG_SERVER_MODE=False
-  #     - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@example.com
+      - PGADMIN_DEFAULT_PASSWORD=12345
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
     
-    # network_mode: service:db
 
 
 volumes:
