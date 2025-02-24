@@ -3,9 +3,8 @@
 {
 	"name": "Python 3",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"dockerComposeFile": ["../docker-compose.yaml", "../docker-compose.dev.yaml"],
+	"dockerComposeFile": ["docker-compose.dev.yaml"],
 	"service": "devcontainer",
-
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
