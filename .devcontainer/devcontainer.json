@@ -21,7 +21,7 @@
 		"vscode": {
 			"settings": {
 				"git.enabled": true,
-                "python.defaultInterpreterPath": "/workspace/services/api/.venv/bin/python"
+                "python.defaultInterpreterPath": "/workspace/api/.venv/bin/python"
             },
 			"extensions": [
 				"github.vscode-pull-request-github",
@@ -41,7 +41,7 @@
 	},
 	"workspaceFolder": "/workspace",
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cd services/api && uv venv && uv sync",
+	// "postCreateCommand": "cd services/api && uv venv && uv sync",
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root"
 }

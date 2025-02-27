@@ -9,7 +9,6 @@ services:
       - "..:/workspace:cached"
     environment:
       - PORT=8080
-      - POSTGRES_HOST=db
     env_file:
       - .env
     command: ["sleep", "infinity"]

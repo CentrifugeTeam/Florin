@@ -23,7 +23,7 @@ services:
 
   api:
     build: 
-      context: services/api
+      context: api
       dockerfile: Dockerfile
 
     depends_on:
