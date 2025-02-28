@@ -4,9 +4,11 @@ from uuid import UUID
 from .mixins import UUIDMixin, TimestampMixin
 from datetime import date, datetime
 from typing import TYPE_CHECKING
+from .user_plants import UserPlant
 
 if TYPE_CHECKING:
     from .users import User
+    from .calendar import CronPlantCalendarScheduler
 
 
 class Plant(UUIDMixin, SQLModel, table=True):
@@ -21,9 +23,9 @@ class Plant(UUIDMixin, SQLModel, table=True):
     rank: str
 
     note: 'Note' = Relationship(back_populates='plant')
-    user_plants: list['UserPlants'] = Relationship(back_populates='plant')
-    # users: list['User'] = Relationship( #TODO fix it need to create link model
-    # back_populates='plants', link_model='user_plants')
+    user_plants: list['UserPlant'] = Relationship(back_populates='plant')
+    cron_schedules: list['CronPlantCalendarScheduler'] = Relationship(
+        back_populates='plant')
 
 
 class Note(UUIDMixin, TimestampMixin, SQLModel, table=True):
@@ -34,17 +36,3 @@ class Note(UUIDMixin, TimestampMixin, SQLModel, table=True):
     plant: 'Plant' = Relationship(back_populates='note')
 
     __table_args__ = (UniqueConstraint('plant_id', 'user_id'),)
-
-
-class UserPlants(UUIDMixin, SQLModel, table=True):
-    __tablename__ = "user_plants"
-    name: str
-    user_id: UUID = Field(foreign_key="users.id")
-    plant_id: UUID = Field(foreign_key="plants.id")
-
-    plant: 'Plant' = Relationship(back_populates='user_plants')
-
-    created_at: datetime = Field(sa_column=Column(DateTime(
-        timezone=True), nullable=False, server_default=text('CURRENT_TIMESTAMP')))
-    updated_at: datetime = Field(sa_column=Column(
-        DateTime(timezone=True), nullable=False, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP')))

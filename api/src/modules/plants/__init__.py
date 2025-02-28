@@ -7,8 +7,8 @@ from typing import Annotated
 from .manager import plant_manager, user_plant_manager
 from .schema import PlantRead, PlantCard, NoteRead, UserPlantRead, UserPlantsProfile
 from ..auth import to_openapi
-from ..auth.authenticator import authenticate, UnauthorizedResponse
-from ...db import Note, Plant, UserPlants
+from ..auth.authenticator import authenticated, UnauthorizedResponse
+from ...db import Note, Plant, UserPlant
 r = APIRouter(prefix='/plants', tags=['Plants'])
 
 
@@ -25,7 +25,7 @@ async def plant(session: GetSession, id: UUID):
 @r.post("/{id}/note", response_model=NoteRead, responses={404: {"model": ErrorModel, "detail": "Not found"},
                                                           **to_openapi(UnauthorizedResponse)})
 async def plant_note(session: GetSession, id: UUID,
-                     user: authenticate,
+                     user: authenticated,
                      text: Annotated[str, Body(embed=True)]):
     plant = await plant_manager.get_or_404(session, id=id)
     note = Note(user_id=user.id, plant_id=plant.id, text=text)
@@ -36,12 +36,12 @@ async def plant_note(session: GetSession, id: UUID,
 
 @r.post('/{id}/attach', response_model=UserPlantRead, responses={**not_found_response, **to_openapi(UnauthorizedResponse)})
 async def my_plants(session: GetSession, id: UUID,
-                    user: authenticate,
+                    user: authenticated,
                     name: Annotated[str | None, Body(embed=True)] = None
                     ):
     plant = await plant_manager.get_or_404(session, id=id)
-    user_plant = UserPlants(name=name or plant.name,
-                            user_id=user.id, plant_id=plant.id)
+    user_plant = UserPlant(name=name or plant.name,
+                           user_id=user.id, plant_id=plant.id)
     session.add(user_plant)
     await session.commit()
     return user_plant
@@ -50,13 +50,13 @@ async def my_plants(session: GetSession, id: UUID,
 @r.get('/attached/', response_model=list[UserPlantsProfile], responses={**to_openapi(UnauthorizedResponse)}
        )
 async def attach(session: GetSession,
-                 user: authenticate):
-    return await user_plant_manager.paginated_list(session)
+                 user: authenticated):
+    return await user_plant_manager.paginated_list(session, user)
 
 
 @r.delete('/{id}/detach', responses={**not_found_response, **to_openapi(UnauthorizedResponse), **no_content_response})
 async def detach(session: GetSession, id: UUID,
-                 user: authenticate,
+                 user: authenticated,
                  ):
     """Удалить прикреплённый цветок
     """

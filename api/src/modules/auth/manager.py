@@ -58,7 +58,8 @@ class UsersManager(ModelManager):
         if in_obj.photo is not None:
             try:
                 in_obj.photo = await file_manager.save_file(in_obj.photo, bucket_name='profiles')
-            except Exception:
+            except Exception as e:
+
                 raise CouldUploadFileHTTPException
 
         db_obj.photo_url = in_obj.photo

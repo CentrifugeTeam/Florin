@@ -21,7 +21,6 @@ class FileAdapter:
         self.client = Minio(settings.minio.endpoint,
                             access_key=settings.minio.access_key,
                             secret_key=settings.minio.secret_key)
-        # self.session = get_session()
 
     @staticmethod
     def _get_s3_url(bucket: str, key: str):

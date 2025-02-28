@@ -1,8 +1,8 @@
 from sqlmodel import SQLModel
 from datetime import datetime
-from uuid import UUID
-from typing import Union
+from ..plants.schema import PlantRead
 
 
-class CalendarBase(SQLModel):
-    rank: str
+class CalendarEvent(SQLModel):
+    datetime: datetime
+    plant: PlantRead

@@ -3,9 +3,10 @@ from sqlmodel import SQLModel, Field, Relationship
 from .mixins import UUIDMixin
 from uuid import UUID
 from typing import TYPE_CHECKING
+from .user_plants import UserPlant
 
 if TYPE_CHECKING:
-    from .plants import Plant, UserPlants
+    from .plants import Plant
 
 
 class User(UUIDMixin, SQLModel, table=True):
@@ -19,8 +20,9 @@ class User(UUIDMixin, SQLModel, table=True):
     is_superuser: bool = False
     photo_url: str | None = None
 
+    user_plants: list['UserPlant'] = Relationship(back_populates='user')
     # plants: list['Plant'] = Relationship(
-    # back_populates='users', link_model=UserPlants)
+    # back_populates='users', link_model=UserPlant)
 
 
 class Role(UUIDMixin, SQLModel, table=True):

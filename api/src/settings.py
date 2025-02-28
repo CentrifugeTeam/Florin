@@ -34,6 +34,6 @@ class MinioSettings(BaseSettings):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra='allow')
-    JWT_PRIVATE_KEY: str = 'hello'
+    JWT_PRIVATE_KEY: str
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     minio: MinioSettings = Field(default_factory=MinioSettings)
