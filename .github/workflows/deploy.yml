@@ -18,8 +18,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script_stop: true # Stop script on error
-          # TODO: change pulled branch
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}/Florin
-            git pull origin serverfull
+            git pull origin main
             docker compose up -d --build --pull always
