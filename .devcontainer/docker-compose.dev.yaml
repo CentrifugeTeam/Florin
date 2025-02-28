@@ -1,0 +1,33 @@
+
+services:
+  devcontainer:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - "..:/workspace:cached"
+    environment:
+      - PORT=8080
+    env_file:
+      - .env
+    command: ["sleep", "infinity"]
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8002:80"
+    volumes:
+      - pgadmin_volume:/var/lib/pgadmin
+
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@example.com
+      - PGADMIN_DEFAULT_PASSWORD=12345
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+    
+
+
+volumes:
+  pgadmin_volume:

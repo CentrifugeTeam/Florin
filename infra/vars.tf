@@ -11,11 +11,3 @@ variable "folder_id" {
   description = "Variable for Yandex Cloud folder_id"
 
 }
-
-
-
-variable "oauth_key" {
-
-}
-
-variable "jwt_private_key" {}
