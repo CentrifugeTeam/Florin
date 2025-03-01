@@ -1,15 +1,18 @@
-from sqlmodel import Field
+from sqlmodel import SQLModel, Relationship, Field
+from .mixins import UUIDMixin
+from typing import TYPE_CHECKING
 from sqlalchemy import Column, DateTime, text
 from datetime import datetime
 from uuid import UUID, uuid4
 
+if TYPE_CHECKING:
+    from .plants import Plant
 
-class UUIDMixin:
-    id: UUID = Field(primary_key=True, default_factory=uuid4)
 
+class Article(UUIDMixin, SQLModel, table=True):
+    __tablename__ = "articles"
+    text: str
 
-class TimestampMixin:
-    # THIS MIXIN DOES NOT WORK JUST COPY
     created_at: datetime = Field(
         sa_column=Column(
             DateTime(timezone=True),
@@ -25,3 +28,6 @@ class TimestampMixin:
             onupdate=text("CURRENT_TIMESTAMP"),
         )
     )
+
+    plant_id: UUID = Field(foreign_key="plants.id")
+    plant: "Plant" = Relationship(back_populates="articles")

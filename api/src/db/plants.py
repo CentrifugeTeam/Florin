@@ -9,11 +9,13 @@ from .user_plants import UserPlant
 if TYPE_CHECKING:
     from .users import User
     from .calendar import CronPlantCalendarScheduler
+    from .articles import Article
 
 
 class Plant(UUIDMixin, SQLModel, table=True):
     __tablename__ = "plants"
-    name: str = Field(unique=True)
+    name: str | None
+    origin_name: str = Field(unique=True)
     bibliography: str
     slug: str
     year: date
@@ -22,10 +24,12 @@ class Plant(UUIDMixin, SQLModel, table=True):
     genus: str
     rank: str
 
-    note: 'Note' = Relationship(back_populates='plant')
-    user_plants: list['UserPlant'] = Relationship(back_populates='plant')
-    cron_schedules: list['CronPlantCalendarScheduler'] = Relationship(
-        back_populates='plant')
+    note: "Note" = Relationship(back_populates="plant")
+    user_plants: list["UserPlant"] = Relationship(back_populates="plant")
+    cron_schedules: list["CronPlantCalendarScheduler"] = Relationship(
+        back_populates="plant"
+    )
+    articles: list["Article"] = Relationship(back_populates="plant")
 
 
 class Note(UUIDMixin, TimestampMixin, SQLModel, table=True):
@@ -33,6 +37,6 @@ class Note(UUIDMixin, TimestampMixin, SQLModel, table=True):
     plant_id: UUID = Field(foreign_key="plants.id")
     user_id: UUID = Field(foreign_key="users.id")
     text: str
-    plant: 'Plant' = Relationship(back_populates='note')
+    plant: "Plant" = Relationship(back_populates="note")
 
-    __table_args__ = (UniqueConstraint('plant_id', 'user_id'),)
+    __table_args__ = (UniqueConstraint("plant_id", "user_id"),)

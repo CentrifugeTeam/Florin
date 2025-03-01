@@ -26,6 +26,14 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=12345
       - PGADMIN_CONFIG_SERVER_MODE=False
       - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+
+
+  # ollama:
+  #   image: ollama/ollama
+  #   ports: ["11434:11434"]
+  #   # command: ["ollama", "run", "qwen2.5"]
+
+    
     
 
 

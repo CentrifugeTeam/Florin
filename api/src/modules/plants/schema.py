@@ -1,14 +1,16 @@
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Field
 from datetime import datetime
 from uuid import UUID
+from datetime import date
 from typing import Union
 
 
 class PlantBase(SQLModel):
-    name: str
+    name: str | None = Field(description="Имя растения на русском языке")
+    origin_name: str = Field(description="Оригинальное имя")
     bibliography: str
     slug: str
-    # year: str
+    year: date
     image_url: str
     family: str
     genus: str
@@ -20,7 +22,7 @@ class PlantRead(PlantBase):
 
 
 class PlantCard(PlantRead):
-    note: Union['NoteRead', None]
+    note: Union["NoteRead", None]
 
 
 class NoteRead(SQLModel):
@@ -44,6 +46,6 @@ class UserPlantRead(SQLModel):
 class UserPlantsProfile(SQLModel):
     id: UUID
     name: str
-    plant: 'PlantRead'
+    plant: "PlantRead"
     created_at: datetime
     updated_at: datetime
