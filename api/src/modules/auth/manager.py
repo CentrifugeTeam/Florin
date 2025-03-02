@@ -7,40 +7,29 @@ from .scheme import UserCreate
 from ...db import User, Token
 from starlette import status
 from passlib.hash import pbkdf2_sha256
-from ..files.adapter import adapter as file_manager
+from ..files.adapter import adapter as file_adapter
 from typing import Optional
 from sqlmodel import select
 
 CouldUploadFileHTTPException = HTTPException(
-    status_code=status.HTTP_400_BAD_REQUEST, detail='Could not upload file')
-
-
-def to_openapi(exception: HTTPException):
-    return {exception.status_code: {
-        'detail': exception.detail,
-        'headers': exception.headers,
-        'description': exception.detail,
-        'model': ErrorModel
-    }
-    }
+    status_code=status.HTTP_400_BAD_REQUEST, detail="Could not download a file"
+)
 
 
 class UsersManager(ModelManager):
-
     def __init__(self) -> None:
         self.password_helper = pbkdf2_sha256
         super().__init__(User)
 
     async def create_user(
-            self,
-            session: AsyncSession,
-            in_obj: UserCreate,
-            *,
-            commit: bool = True,
-            refresh_attribute_names: Iterable[str] | None = None,
-            **attrs: Any,
+        self,
+        session: AsyncSession,
+        in_obj: UserCreate,
+        *,
+        commit: bool = True,
+        refresh_attribute_names: Iterable[str] | None = None,
+        **attrs: Any,
     ) -> User:
-
         in_obj.password = self.password_helper.hash(in_obj.password)
         create_data = in_obj.model_dump()
         create_data.update(attrs)
@@ -52,14 +41,15 @@ class UsersManager(ModelManager):
 
         await self.run_db_validation(session, in_obj=create_data)
 
-        create_data['type'] = 'password'
+        create_data["type"] = "password"
         db_obj: User = self.model(**create_data)
 
         if in_obj.photo is not None:
             try:
-                in_obj.photo = await file_manager.save_file(in_obj.photo, bucket_name='profiles')
+                in_obj.photo = await file_adapter.save_file(
+                    in_obj.photo, bucket_name="profiles"
+                )
             except Exception as e:
-
                 raise CouldUploadFileHTTPException
 
         db_obj.photo_url = in_obj.photo
@@ -77,19 +67,19 @@ class UsersManager(ModelManager):
         await session.commit()
 
     async def create_or_get_user(
-            self,
-            session: AsyncSession,
-            user_data: dict,
-            *,
-            commit: bool = True,
-            refresh_attribute_names: Optional[Iterable[str]] = None,
+        self,
+        session: AsyncSession,
+        user_data: dict,
+        *,
+        commit: bool = True,
+        refresh_attribute_names: Optional[Iterable[str]] = None,
     ) -> User:
         """
         Метод для создания или получения пользователя из базы данных по email.
         Если пользователь с данным email существует, то он будет возвращен.
         Если нет — будет создан новый пользователь.
         """
-        email = user_data.get('email')
+        email = user_data.get("email")
 
         query = select(User).where(User.email == email)
         user_result = await session.exec(query)
@@ -100,13 +90,13 @@ class UsersManager(ModelManager):
 
         # Создание нового пользователя
         create_data = {
-            'email': email,
-            'first_name': user_data.get('first_name'),
-            'last_name': user_data.get('last_name'),
-            'username': 'Пользователь',
-            'photo_url': user_data.get('picture'),
-            'type': 'sso',
-            'password': None,
+            "email": email,
+            "first_name": user_data.get("first_name"),
+            "last_name": user_data.get("last_name"),
+            "username": "Пользователь",
+            "photo_url": user_data.get("picture"),
+            "type": "sso",
+            "password": None,
         }
 
         db_obj: User = self.model(**create_data)
