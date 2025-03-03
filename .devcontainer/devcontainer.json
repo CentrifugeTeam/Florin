@@ -3,14 +3,14 @@
 {
 	"name": "Api",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"dockerComposeFile": ["docker-compose.dev.yaml"],
+	"dockerComposeFile": ["./docker-compose.dev.yaml"],
+
 	"service": "devcontainer",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [8002, 80],
-	
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "pip3 install --user -r requirements.txt",
@@ -44,15 +44,16 @@
 		"ghcr.io/devcontainers/features/git-lfs:1": {
 			"version": "latest"
 		},
-		"ghcr.io/prulloac/devcontainer-features/ollama:1": {
-			"version": "latest"
-		}, 
 		"ghcr.io/prulloac/devcontainer-features/pre-commit:1": {
 			"version": "latest"
 		},
-		"ghcr.io/devcontainers-extra/features/cookiecutter:2": {
+		// "ghcr.io/devcontainers-extra/features/cookiecutter:2": {
+			// "version": "latest"
+		// },
+		"ghcr.io/jsburckhardt/devcontainer-features/uv:1": {
 			"version": "latest"
 		}
+
 
 
 

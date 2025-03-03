@@ -1,9 +1,7 @@
 
 services:
   devcontainer:
-    build: 
-      context: .
-      dockerfile: Dockerfile
+    image: mcr.microsoft.com/devcontainers/python:1-3.12-bullseye
 
     volumes:
       - "..:/workspace:cached"
@@ -27,13 +25,7 @@ services:
       - PGADMIN_CONFIG_SERVER_MODE=False
       - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
 
-
-  # ollama:
-  #   image: ollama/ollama
-  #   ports: ["11434:11434"]
-  #   # command: ["ollama", "run", "qwen2.5"]
-
-    
+      
     
 
 

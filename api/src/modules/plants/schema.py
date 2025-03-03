@@ -37,6 +37,7 @@ class NoteRead(SQLModel):
 class UserPlantRead(SQLModel):
     id: UUID
     name: str
+    photo_url: str
     plant_id: UUID
     user_id: UUID
     created_at: datetime

@@ -2,13 +2,15 @@ from ...deps import GetSession
 from fastapi_libkit.responses import ErrorModel, not_found_response, no_content_response
 from sqlalchemy.orm import joinedload
 from uuid import UUID
-from fastapi import APIRouter, Query, Body, Response
+from fastapi import APIRouter, Query, Body, Response, Depends, HTTPException
 from typing import Annotated
+from datetime import datetime, timedelta, date
 from .manager import plant_manager, user_plant_manager
 from .schema import PlantRead, PlantCard, NoteRead, UserPlantRead, UserPlantsProfile
+from ..calendar.manager import calendar_manager
 from ...shared.responses import to_openapi
-from ..auth.authenticator import authenticated, UnauthorizedResponse
-from ...db import Note, Plant, UserPlant
+from ..auth.authenticator import authenticated, UnauthorizedResponse, authenticator
+from ...db import Note, Plant, UserPlant, CalendarEvent, User
 
 r = APIRouter(prefix="/plants", tags=["Plants"])
 
@@ -65,10 +67,35 @@ async def my_plants(
     user: authenticated,
     name: Annotated[str | None, Body(embed=True)] = None,
 ):
-    plant = await plant_manager.get_or_404(session, id=id)
-    user_plant = UserPlant(name=name or plant.name, user_id=user.id, plant_id=plant.id)
+    plant = await session.get(Plant, id, options=[joinedload(Plant.cron_schedules)])
+    if not plant:
+        raise HTTPException(status_code=404)
+
+    user_plant = UserPlant(
+        photo_url="",
+        name=name or plant.name or plant.origin_name,
+        user_id=user.id,
+        plant_id=plant.id,
+    )
     session.add(user_plant)
+
+    # create new calendar events in two months for this plant
+    start_date = datetime.now()
+    month = start_date.month % 12 + 2
+    year = start_date.year + (month // 12)
+    end_date = datetime(year=year, month=month, day=1)
+    for new_datetime in calendar_manager.get_new_datetime_in_interval(
+        start_date, end_date, plant.cron_schedules[0]
+    ):
+        event = CalendarEvent(
+            do_on=new_datetime,
+            user_plant_id=user_plant.id,
+            header="Полив растения",
+            content=f"Успей полить растение {plant.name or plant.origin_name}",
+        )
+        session.add(event)
     await session.commit()
+
     return user_plant
 
 

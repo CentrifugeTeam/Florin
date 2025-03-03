@@ -8,7 +8,7 @@ from .user_plants import UserPlant
 
 if TYPE_CHECKING:
     from .users import User
-    from .calendar import CronPlantCalendarScheduler
+    from .calendar import CronPlantCalendarScheduler, CalendarEvent
     from .articles import Article
 
 
