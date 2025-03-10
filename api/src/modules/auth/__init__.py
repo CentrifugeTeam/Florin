@@ -5,7 +5,7 @@ from .adapters.token import token_adapter
 from ...db import User, Token
 from ...deps import GetSession
 from .authenticator import authenticator
-from ...shared.responses import to_openapi
+from ...responses import to_openapi
 from .manager import user_manager, CouldUploadFileHTTPException
 from .scheme import PermissionTokenRead, UserCreate, UserRead
 from typing import Annotated
@@ -45,7 +45,8 @@ async def login(
         user_manager.password_helper.hash(credentials.password)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-    verified = user_manager.password_helper.verify(credentials.password, user.password)
+    verified = user_manager.password_helper.verify(
+        credentials.password, user.password)
     if not verified:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 

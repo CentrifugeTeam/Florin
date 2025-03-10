@@ -3,11 +3,11 @@ from fastapi import APIRouter, HTTPException, UploadFile
 from fastapi.responses import Response
 
 from .adapter import (
-    adapter,
+    file_adapter,
     NotFoundResponse,
     UnExpectedErrorResponse,
 )
-from ...shared.responses import to_openapi
+from ...responses import to_openapi
 
 r = APIRouter(prefix="/files", tags=["Files"])
 IncorrectUrlResponse = HTTPException(status_code=422, detail="Incorrect url")
@@ -32,7 +32,7 @@ async def view(url: str) -> Response:
     if len(fp_group) != 2:
         raise IncorrectUrlResponse
     bucket_name, file_name = fp_group[0], fp_group[1]
-    resp = await adapter.get_file(bucket_name, file_name)
+    resp = await file_adapter.get_file(bucket_name, file_name)
     return Response(
         content=resp,
         media_type=magic.from_buffer(resp, mime=True),

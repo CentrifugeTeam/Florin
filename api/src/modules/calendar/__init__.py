@@ -4,7 +4,7 @@ from datetime import date
 from sqlalchemy.orm import joinedload
 from uuid import UUID
 from fastapi import APIRouter, Query, Body, Response, Depends, HTTPException
-from ...shared.responses import to_openapi
+from ...responses import to_openapi
 from typing import Annotated
 from .manager import calendar_manager, calendar_event_manager
 from .schema import CalendarEventRead
@@ -44,7 +44,8 @@ EventAlreadyCompletedResponse = HTTPException(
 @r.post(
     "/events/{id}/complete",
     response_model=CalendarEventRead,
-    responses={**not_found_response, **to_openapi(EventAlreadyCompletedResponse)},
+    responses={**not_found_response, **
+               to_openapi(EventAlreadyCompletedResponse)},
 )
 async def event(session: GetSession, id: UUID, user: User = Depends(authenticator())):
     """Complete event"""

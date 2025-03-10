@@ -3,17 +3,17 @@
 {
 	"name": "Api",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"dockerComposeFile": ["./docker-compose.dev.yaml"],
+	"dockerComposeFile": ["docker-compose.yaml"],
 
 	"service": "devcontainer",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [8002, 80],
+	"forwardPorts": [8002, 8001, 6379, 80],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	// "postCreateCommand": "cd api && uv sync --group tests",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -33,7 +33,9 @@
 				"ms-toolsai.vscode-jupyter-powertoys",
 				"ms-toolsai.jupyter-renderers",
 				"ms-toolsai.jupyter-keymap",
-				"ms-toolsai.jupyter"
+				"ms-toolsai.jupyter",
+				"charliermarsh.ruff",
+				"GigaCode.gigacode-vscode"
 			]
 		}
 	},
@@ -52,8 +54,11 @@
 		// },
 		"ghcr.io/jsburckhardt/devcontainer-features/uv:1": {
 			"version": "latest"
+		},
+		"ghcr.io/jsburckhardt/devcontainer-features/ruff:1": {
+			"version": "latest"
 		}
-
+		
 
 
 

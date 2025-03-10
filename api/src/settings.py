@@ -32,8 +32,15 @@ class MinioSettings(BaseSettings):
     endpoint: str
 
 
+class RedisSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix='redis_')
+    host: str
+    port: str
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra='allow')
     JWT_PRIVATE_KEY: str
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     minio: MinioSettings = Field(default_factory=MinioSettings)
+    redis: RedisSettings = Field(default_factory=RedisSettings)

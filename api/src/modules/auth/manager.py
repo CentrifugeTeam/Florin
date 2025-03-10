@@ -7,7 +7,7 @@ from .scheme import UserCreate
 from ...db import User, Token
 from starlette import status
 from passlib.hash import pbkdf2_sha256
-from ..files.adapter import adapter as file_adapter
+from ..files.adapter import file_adapter as file_adapter
 from typing import Optional
 from sqlmodel import select
 

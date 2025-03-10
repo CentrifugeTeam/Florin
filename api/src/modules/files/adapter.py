@@ -83,4 +83,4 @@ class FileAdapter:
         return await run_in_threadpool(self._save_file, upload_file, bucket_name)
 
 
-adapter = FileAdapter()
+file_adapter = FileAdapter()

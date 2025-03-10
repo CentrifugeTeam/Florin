@@ -1,14 +1,16 @@
-from ...deps import GetSession
+import json
+from ...deps import GetRedis, GetSession
 from fastapi_libkit.responses import ErrorModel, not_found_response, no_content_response
 from sqlalchemy.orm import joinedload
 from uuid import UUID
-from fastapi import APIRouter, Query, Body, Response, Depends, HTTPException
+from fastapi import APIRouter, Query, Body, Request, Response, Depends, HTTPException, UploadFile
 from typing import Annotated
 from datetime import datetime, timedelta, date
-from .manager import plant_manager, user_plant_manager
+from ..files.adapter import file_adapter
 from .schema import PlantRead, PlantCard, NoteRead, UserPlantRead, UserPlantsProfile
 from ..calendar.manager import calendar_manager
-from ...shared.responses import to_openapi
+from ...responses import to_openapi
+from .manager import user_plant_manager, plant_manager
 from ..auth.authenticator import authenticated, UnauthorizedResponse, authenticator
 from ...db import Note, Plant, UserPlant, CalendarEvent, User
 
@@ -62,10 +64,11 @@ async def plant_note(
     responses={**not_found_response, **to_openapi(UnauthorizedResponse)},
 )
 async def my_plants(
-    session: GetSession,
+    *,
     id: UUID,
-    user: authenticated,
+    session: GetSession,
     name: Annotated[str | None, Body(embed=True)] = None,
+    user: authenticated,
 ):
     plant = await session.get(Plant, id, options=[joinedload(Plant.cron_schedules)])
     if not plant:
@@ -125,3 +128,18 @@ async def detach(
     user_plant = await user_plant_manager.get_or_404(session, id=id)
     await user_plant_manager.delete(session, user_plant)
     return Response(status_code=204)
+
+
+@r.post(
+    "/detect-disease",
+    responses={**to_openapi(UnauthorizedResponse)},
+)
+async def detect(
+    request: Request,
+    session: GetSession,
+    user: authenticated,
+    photo: UploadFile   
+):
+    
+    predict = request.app.state.disease_pipe(photo)
+    return {"ok": predict}

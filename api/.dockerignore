@@ -2,3 +2,4 @@ README.md
 .venv
 __pycache__
 .env.example
+tests
