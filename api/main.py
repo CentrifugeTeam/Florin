@@ -1,16 +1,14 @@
 from fastapi import FastAPI
 from src.modules import plants, auth, files, users, calendar, articles, chat
-from transformers import pipeline
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    pipe = pipeline(task="image-classification",
-                    model=str(Path(__file__).parent / "model"))
-    app.state.disease_pipe = pipe
+    # pipe = pipeline(task="image-classification",
+    #                 model=str(Path(__file__).parent / "model"))
+    # app.state.disease_pipe = pipe
     yield
 
 app = FastAPI(lifespan=lifespan)

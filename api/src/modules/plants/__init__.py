@@ -130,16 +130,16 @@ async def detach(
     return Response(status_code=204)
 
 
-@r.post(
-    "/detect-disease",
-    responses={**to_openapi(UnauthorizedResponse)},
-)
-async def detect(
-    request: Request,
-    session: GetSession,
-    user: authenticated,
-    photo: UploadFile   
-):
+# @r.post(
+#     "/detect-disease",
+#     responses={**to_openapi(UnauthorizedResponse)},
+# )
+# async def detect(
+#     request: Request,
+#     session: GetSession,
+#     user: authenticated,
+#     photo: UploadFile   
+# ):
     
-    predict = request.app.state.disease_pipe(photo)
-    return {"ok": predict}
+#     predict = request.app.state.disease_pipe(photo)
+#     return {"ok": predict}
